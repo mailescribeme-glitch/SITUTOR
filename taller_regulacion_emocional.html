@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Taller de Regulación Emocional | COBAEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            color: #1e2a3e;
+            line-height: 1.5;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+
+        /* ========== MENÚ DE HAMBURGUESA FIJO ========== */
+        .menu-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-menu-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffb347;
+            background: white;
+        }
+
+        .logo-menu-text {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .logo-menu-text small {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .hamburguesa {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+        }
+
+        .hamburguesa span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburguesa.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+
+        .hamburguesa.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburguesa.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0b3b2f 0%, #1c6e4a 100%);
+            z-index: 999;
+            transition: right 0.3s ease;
+            padding-top: 5rem;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+        }
+
+        .menu-panel.open {
+            right: 0;
+        }
+
+        .menu-panel ul {
+            list-style: none;
+            padding: 0 1rem;
+        }
+
+        .menu-panel li {
+            margin-bottom: 1rem;
+        }
+
+        .menu-panel a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            transition: background 0.2s;
+        }
+
+        .menu-panel a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* ========== HEADER PRINCIPAL ========== */
+        .header {
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            font-size: 2.2rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .school-badge {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ========== SECCIONES ========== */
+        .seccion {
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            background: white;
+        }
+
+        .seccion:hover {
+            transform: translateY(-3px);
+        }
+
+        .seccion h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 3px solid #ffb347;
+            padding-bottom: 0.5rem;
+            color: #1a4b6e;
+        }
+
+        .seccion h3 {
+            color: #2c7da0;
+            margin: 1rem 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Ejercicios */
+        .ejercicio {
+            background: #fef9e8;
+            border-left: 4px solid #ffb347;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+
+        .textarea-pensamiento {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.8rem;
+            font-family: inherit;
+            margin: 0.5rem 0;
+            resize: vertical;
+        }
+
+        .btn-ejercicio {
+            background: #2c7da0;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .btn-ejercicio:hover {
+            background: #1a4b6e;
+        }
+
+        .resultado {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: #e6f4ea;
+            border-radius: 0.8rem;
+            display: none;
+        }
+
+        /* Respiración animada */
+        .respiracion-container {
+            text-align: center;
+            padding: 1rem;
+            background: #e0f0f5;
+            border-radius: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .circulo-respiracion {
+            width: 120px;
+            height: 120px;
+            background: #2c7da0;
+            border-radius: 50%;
+            margin: 1rem auto;
+            transition: transform 0.1s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .fase-texto {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .btn-respiracion {
+            background: #1a4b6e;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            margin: 0.3rem;
+            cursor: pointer;
+        }
+
+        .btn-respiracion:hover {
+            background: #0e3a55;
+        }
+
+        /* Pomodoro */
+        .pomodoro-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+        }
+
+        /* Botones */
+        .btn-download {
+            background: #1c6e4a;
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.3rem;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #b91c1c;
+        }
+
+        .botonera {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .btn-regresar {
+            background: #ffb347;
+            color: #1e2a3e;
+        }
+
+        .btn-regresar:hover {
+            background: #e6981a;
+            color: white;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 1.5rem;
+            border-top: 1px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .footer-contenido {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: #4b6f7e;
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1a4b6e;
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-licencia {
+            font-size: 0.65rem;
+            margin-top: 0.5rem;
+            color: #94a3b8;
+        }
+
+        .mensaje-exito {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1c6e4a;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        @media (max-width: 750px) {
+            .container {
+                padding: 1rem;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">
+                SITUTOR<br>
+                <small>Sistema de Comunicación Tutorial</small>
+            </div>
+        </div>
+        <button class="hamburguesa" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <!-- Panel desplegable del menú -->
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="index.html#seccion-analisis">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1><span>🧘</span> Taller de Regulación Emocional</h1>
+            <p>SITUTOR · Domino mi estrés, transformo mi desempeño</p>
+        </div>
+
+        <!-- Técnica 1: Respiración 4-7-8 -->
+        <div class="seccion">
+            <h2>🌬️ 1. Respiración 4-7-8</h2>
+            <p>Activa tu sistema de calma en menos de 2 minutos. Puedes hacerlo antes de un examen, en clase o en casa.</p>
+            
+            <div class="respiracion-container">
+                <div class="circulo-respiracion" id="circuloRespiración">
+                    🌬️
+                </div>
+                <div class="fase-texto" id="faseTexto">Preparado</div>
+                <div>
+                    <button class="btn-respiracion" id="btnIniciarRespiración">▶ Iniciar ciclo (4-7-8)</button>
+                    <button class="btn-respiracion" id="btnDetenerRespiración">⏹️ Detener</button>
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem;">📌 Paso a paso: Inhala 4s → Retén 7s → Exhala 8s. Repite 4 veces.</p>
+            </div>
+        </div>
+
+        <!-- Técnica 2: Reestructuración cognitiva -->
+        <div class="seccion">
+            <h2>💭 2. Cambia tus pensamientos negativos</h2>
+            <p>La ansiedad viene de lo que nos decimos. Aprende a reformular pensamientos.</p>
+            
+            <div class="ejercicio">
+                <strong>✍️ Ejercicio: Yo no soy mis pensamientos</strong>
+                <p style="margin-top: 0.5rem;">Escribe un pensamiento negativo que tengas antes de un examen:</p>
+                <input type="text" id="pensamientoNegativo" class="textarea-pensamiento" placeholder="Ej: 'Voy a reprobar', 'No soy bueno en esta materia'">
+                <button class="btn-ejercicio" id="btnReformular">Transformar pensamiento →</button>
+                <div id="resultadoReformulacion" class="resultado"></div>
+            </div>
+
+            <div class="ejercicio">
+                <strong>📝 Ejemplos para inspirarte:</strong>
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>❌ "Voy a reprobar" → ✅ "He estudiado, puedo repasar una hora más"</li>
+                    <li>❌ "Todos van mejor que yo" → ✅ "Cada quien va a su ritmo, yo sé lo que sé"</li>
+                    <li>❌ "No sirvo para esto" → ✅ "Esta materia me cuesta, pero puedo pedir ayuda"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Técnica 3: Pomodoro -->
+        <div class="seccion">
+            <h2>⏲️ 3. Técnica Pomodoro anti-procrastinación</h2>
+            <p>Estudia 25 minutos, descansa 5. Así vences la procrastinación sin quemarte.</p>
+            
+            <div class="ejercicio">
+                <strong>✍️ Crea tu plan de estudio Pomodoro</strong>
+                <label>Materia que quieres estudiar:</label>
+                <input type="text" id="materiaPomodoro" class="pomodoro-input" placeholder="Ej: Matemáticas, Historia, Biología...">
+                <label>Tema específico (lo más difícil):</label>
+                <input type="text" id="temaPomodoro" class="pomodoro-input" placeholder="Ej: Ecuaciones cuadráticas, Independencia de México...">
+                <label>¿Cuántos Pomodoros necesitas? (1 Pomodoro = 25 min):</label>
+                <input type="number" id="numPomodoros" class="pomodoro-input" placeholder="Ej: 2" min="1" max="8">
+                <button class="btn-ejercicio" id="btnGenerarPlan">Generar mi plan →</button>
+                <div id="resultadoPomodoro" class="resultado"></div>
+            </div>
+
+            <div class="ejercicio">
+                <strong>📌 ¿Cómo aplicar Pomodoro?</strong>
+                <ol style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>Elige UNA tarea específica</li>
+                    <li>Pon temporizador 25 minutos (usa el de tu celular)</li>
+                    <li>Estudia SIN interrupciones (nada de celular)</li>
+                    <li>Suena el timer → descanso 5 minutos (levántate, estírate)</li>
+                    <li>Repite 4 ciclos → descanso largo 15-20 min</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Plan de acción personal -->
+        <div class="seccion">
+            <h2>📋 Mi plan contra la ansiedad</h2>
+            <p>Responde y guarda este plan. Tu Tutor Grupal lo revisará si tú quieres compartirlo.</p>
+            
+            <div class="ejercicio">
+                <label>👤 Nombre del alumno:</label>
+                <input type="text" id="planNombre" class="pomodoro-input" placeholder="Escribe tu nombre completo">
+                
+                <label>📚 Grupo:</label>
+                <input type="text" id="planGrupo" class="pomodoro-input" placeholder="Ej: 602">
+                
+                <label>1. ¿Qué materia me da más ansiedad?</label>
+                <input type="text" id="planMateria" class="pomodoro-input">
+                
+                <label>2. ¿Qué técnica voy a usar? (elige una o varias)</label>
+                <select id="planTecnica" class="pomodoro-input">
+                    <option value="">Selecciona...</option>
+                    <option value="respiracion">Respiración 4-7-8</option>
+                    <option value="pensamientos">Cambiar pensamientos negativos</option>
+                    <option value="pomodoro">Técnica Pomodoro</option>
+                    <option value="varias">Varias de ellas</option>
+                </select>
+                
+                <label>3. ¿Cuándo voy a practicarla?</label>
+                <input type="text" id="planCuando" class="pomodoro-input" placeholder="Ej: Días antes del examen, justo antes de empezar...">
+                
+                <label>4. ¿Qué necesito de mi Tutor Grupal o profesores?</label>
+                <input type="text" id="planAyuda" class="pomodoro-input" placeholder="Ej: Que me expliquen los criterios de evaluación, más ejercicios...">
+                
+                <button class="btn-ejercicio" id="btnGuardarPlan">📌 Guardar mi plan (descargar)</button>
+            </div>
+        </div>
+
+        <!-- Materiales de apoyo -->
+        <div class="seccion">
+            <h2>📎 Materiales de apoyo</h2>
+            <p>Descarga estos recursos para tenerlos siempre contigo.</p>
+            <div class="ejercicio" style="text-align: center;">
+                <button class="btn-download" id="downloadInfografia">📥 Infografía resumen</button>
+                <button class="btn-download" id="downloadPlanAccion">📥 Mi plan de acción</button>
+                <button class="btn-download btn-pdf" id="btnPDFTaller">📄 Descargar taller completo como PDF</button>
+            </div>
+            <p style="font-size: 0.75rem; margin-top: 0.8rem; text-align: center;">💡 Guarda las imágenes en tu celular para repasar las técnicas cuando las necesites.</p>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="botonera">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeVl8X5ZZpVX_1PzhnhS7fOJFhV8JSaxs6FRjYSYGMrx0R1IQ/viewform?usp=sharing" class="btn-download" target="_blank" style="background: #2c7da0; text-decoration: none;">📋 Ir al formulario de autopercepción</a>
+            <a href="index.html" class="btn-download btn-regresar" style="text-decoration: none;">🏠 Regresar a SITUTOR</a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p class="footer-copyright">© 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p class="footer-licencia">🔐 Permitido su uso para fines educativos citando la fuente.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="mensajeExito" class="mensaje-exito"></div>
+
+    <script>
+        // ==================== MENÚ DE HAMBURGUESA ====================
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+
+        function closeMenu() {
+            menuPanel.classList.remove('open');
+            menuOverlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
+
+        function openMenu() {
+            menuPanel.classList.add('open');
+            menuOverlay.classList.add('active');
+            menuToggle.classList.add('active');
+        }
+
+        menuToggle.addEventListener('click', () => {
+            if (menuPanel.classList.contains('open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // ==================== RESPIRACIÓN GUIADA 4-7-8 ====================
+        let activo = false;
+        let fase = 0;
+        let intervaloActual = null;
+
+        const circulo = document.getElementById('circuloRespiración');
+        const faseTextoDiv = document.getElementById('faseTexto');
+
+        function iniciarFase() {
+            if (!activo) return;
+            if (fase === 0) {
+                faseTextoDiv.textContent = '🌬️ INHALA (4 segundos)';
+                circulo.style.transform = 'scale(1.1)';
+                let tiempo = 4;
+                intervaloActual = setInterval(() => {
+                    if (!activo) { clearInterval(intervaloActual); return; }
+                    if (tiempo > 0) {
+                        faseTextoDiv.textContent = `🌬️ INHALA (${tiempo} segundos)`;
+                        tiempo--;
+                    } else {
+                        clearInterval(intervaloActual);
+                        fase = 1;
+                        iniciarFase();
+                    }
+                }, 1000);
+            } else if (fase === 1) {
+                faseTextoDiv.textContent = '⏸️ RETÉN (7 segundos)';
+                circulo.style.transform = 'scale(1.2)';
+                let tiempo = 7;
+                intervaloActual = setInterval(() => {
+                    if (!activo) { clearInterval(intervaloActual); return; }
+                    if (tiempo > 0) {
+                        faseTextoDiv.textContent = `⏸️ RETÉN (${tiempo} segundos)`;
+                        tiempo--;
+                    } else {
+                        clearInterval(intervaloActual);
+                        fase = 2;
+                        iniciarFase();
+                    }
+                }, 1000);
+            } else if (fase === 2) {
+                faseTextoDiv.textContent = '💨 EXHALA (8 segundos)';
+                circulo.style.transform = 'scale(0.9)';
+                let tiempo = 8;
+                intervaloActual = setInterval(() => {
+                    if (!activo) { clearInterval(intervaloActual); return; }
+                    if (tiempo > 0) {
+                        faseTextoDiv.textContent = `💨 EXHALA (${tiempo} segundos)`;
+                        tiempo--;
+                    } else {
+                        clearInterval(intervaloActual);
+                        fase = 0;
+                        iniciarFase();
+                    }
+                }, 1000);
+            }
+        }
+
+        document.getElementById('btnIniciarRespiración').addEventListener('click', () => {
+            if (intervaloActual) clearInterval(intervaloActual);
+            activo = true;
+            fase = 0;
+            iniciarFase();
+        });
+
+        document.getElementById('btnDetenerRespiración').addEventListener('click', () => {
+            activo = false;
+            if (intervaloActual) clearInterval(intervaloActual);
+            faseTextoDiv.textContent = 'Preparado';
+            circulo.style.transform = 'scale(1)';
+        });
+
+        // ==================== REFORMULACIÓN COGNITIVA ====================
+        document.getElementById('btnReformular').addEventListener('click', () => {
+            const negativo = document.getElementById('pensamientoNegativo').value.trim();
+            const resultadoDiv = document.getElementById('resultadoReformulacion');
+            if (!negativo) {
+                resultadoDiv.innerHTML = '✏️ Escribe un pensamiento negativo primero.';
+                resultadoDiv.style.display = 'block';
+                return;
+            }
+            let reformulado = '';
+            if (negativo.toLowerCase().includes('reprobar')) {
+                reformulado = '✅ "He estudiado, puedo repasar una hora más y dar lo mejor de mí"';
+            } else if (negativo.toLowerCase().includes('todos') || negativo.toLowerCase().includes('mejor')) {
+                reformulado = '✅ "Cada quien va a su ritmo, yo sé lo que sé y puedo mejorar"';
+            } else if (negativo.toLowerCase().includes('sirvo') || negativo.toLowerCase().includes('capaz')) {
+                reformulado = '✅ "Esta materia me cuesta, pero puedo pedir ayuda y esforzarme"';
+            } else {
+                reformulado = `✅ "${negativo} → Pero puedo prepararme, pedir ayuda y confiar en mi esfuerzo"`;
+            }
+            resultadoDiv.innerHTML = `<strong>Pensamiento transformado:</strong><br>${reformulado}`;
+            resultadoDiv.style.display = 'block';
+        });
+
+        // ==================== PLAN POMODORO ====================
+        document.getElementById('btnGenerarPlan').addEventListener('click', () => {
+            const materia = document.getElementById('materiaPomodoro').value.trim() || 'tu materia';
+            const tema = document.getElementById('temaPomodoro').value.trim() || 'el tema que elegiste';
+            const num = parseInt(document.getElementById('numPomodoros').value) || 2;
+            const totalMin = num * 25;
+            const horas = Math.floor(totalMin / 60);
+            const minutos = totalMin % 60;
+            let tiempoTexto = '';
+            if (horas > 0) tiempoTexto = `${horas} hora(s) y ${minutos} minutos`;
+            else tiempoTexto = `${totalMin} minutos`;
+            
+            const plan = `
+                <strong>📚 Tu plan Pomodoro:</strong><br>
+                • Materia: ${materia}<br>
+                • Tema: ${tema}<br>
+                • ${num} Pomodoro(s) = ${tiempoTexto} de estudio efectivo<br>
+                • Organízate: 25 min estudio → 5 min descanso (repite ${num} veces)<br>
+                ¡Anota en tu calendario cuándo empezarás!
+            `;
+            document.getElementById('resultadoPomodoro').innerHTML = plan;
+            document.getElementById('resultadoPomodoro').style.display = 'block';
+        });
+
+        // ==================== GUARDAR PLAN DE ACCIÓN ====================
+        function mostrarMensaje(texto, esError = false) {
+            const msg = document.getElementById('mensajeExito');
+            msg.textContent = texto;
+            msg.style.background = esError ? '#dc2626' : '#1c6e4a';
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+
+        document.getElementById('btnGuardarPlan').addEventListener('click', () => {
+            const nombre = document.getElementById('planNombre').value.trim() || '[Nombre del alumno]';
+            const grupo = document.getElementById('planGrupo').value.trim() || '[Grupo]';
+            const materia = document.getElementById('planMateria').value.trim() || 'No especificada';
+            const tecnicaSelect = document.getElementById('planTecnica');
+            const tecnica = tecnicaSelect.options[tecnicaSelect.selectedIndex]?.text || 'No seleccionada';
+            const cuando = document.getElementById('planCuando').value.trim() || 'No especificado';
+            const ayuda = document.getElementById('planAyuda').value.trim() || 'No especificado';
+            const fecha = new Date().toLocaleDateString();
+            
+            const contenido = `
+MI PLAN DE ACCIÓN - SITUTOR - TALLER DE REGULACIÓN EMOCIONAL
+==================================================
+Fecha: ${fecha}
+Alumno: ${nombre}
+Grupo: ${grupo}
+Tutor Grupal: José Huidobro Espejel
+
+1. Materia que me da más ansiedad: ${materia}
+2. Técnica que voy a usar: ${tecnica}
+3. Cuándo la voy a practicar: ${cuando}
+4. Qué necesito de mi Tutor Grupal o profesores: ${ayuda}
+
+Compromiso: Aplicaré mi plan en los próximos días.
+
+---
+SITUTOR · Taller de Regulación Emocional · Basado en el SiNaTA
+Colegio de Bachilleres del Estado de México · Plantel 03 Chimalhuacán
+            `;
+            const blob = new Blob([contenido], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `plan_emocional_${nombre.replace(/\s+/g, '_')}_${fecha}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            mostrarMensaje('✅ Plan descargado con éxito');
+        });
+
+        // ==================== MATERIALES DE APOYO ====================
+        document.getElementById('downloadInfografia').addEventListener('click', () => {
+            mostrarMensaje('📥 Infografía: Puedes tomar captura de pantalla de esta página o pedirle a tu Tutor Grupal la imagen oficial.');
+        });
+        document.getElementById('downloadPlanAccion').addEventListener('click', () => {
+            mostrarMensaje('📥 Usa el botón "Guardar mi plan" más arriba para descargar tu plan de acción personal.');
+        });
+
+        // ==================== GENERAR PDF DEL TALLER COMPLETO ====================
+        document.getElementById('btnPDFTaller').addEventListener('click', () => {
+            const fecha = new Date().toLocaleDateString();
+            let nombreAlumno = prompt("Escribe tu nombre para personalizar el PDF:", "Mi nombre");
+            if (!nombreAlumno) nombreAlumno = "Estudiante";
+            
+            const contenido = `
+                <h2>🌬️ 1. Respiración 4-7-8</h2>
+                <p>Técnica de respiración para calmar la ansiedad: Inhala 4s, retén 7s, exhala 8s. Repite 4 ciclos.</p>
+                
+                <h2>💭 2. Reestructuración cognitiva</h2>
+                <p>Cambia pensamientos negativos por pensamientos realistas y funcionales.</p>
+                <p><strong>Ejemplos:</strong><br>
+                ❌ "Voy a reprobar" → ✅ "He estudiado, puedo repasar una hora más"<br>
+                ❌ "Todos van mejor que yo" → ✅ "Cada quien va a su ritmo"<br>
+                ❌ "No sirvo para esto" → ✅ "Puedo pedir ayuda y mejorar"</p>
+                
+                <h2>⏲️ 3. Técnica Pomodoro</h2>
+                <p>Estudia 25 minutos, descansa 5. Después de 4 ciclos, descanso largo de 15-20 minutos.</p>
+                
+                <h2>📋 Mi plan contra la ansiedad</h2>
+                <p><strong>Alumno:</strong> ${nombreAlumno}<br>
+                <strong>Fecha:</strong> ${fecha}</p>
+                <p>Completa este plan en la página web de SITUTOR.</p>
+            `;
+            
+            const htmlCompleto = `<!DOCTYPE html>
+            <html><head><meta charset="UTF-8"><title>SITUTOR - Taller de Regulación Emocional</title>
+            <style>
+                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 2rem; }
+                h1, h2 { color: #1a4b6e; }
+                .header-pdf { text-align: center; margin-bottom: 2rem; }
+                .footer-pdf { text-align: center; margin-top: 2rem; font-size: 0.7rem; border-top: 1px solid #ccc; padding-top: 1rem; }
+            </style>
+            </head>
+            <body>
+            <div class="header-pdf">
+                <h1>🧘 SITUTOR - Taller de Regulación Emocional</h1>
+                <p><strong>Alumno/a:</strong> ${nombreAlumno}</p>
+                <p><strong>Fecha:</strong> ${fecha}</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutor: José Huidobro Espejel</p>
+            </div>
+            ${contenido}
+            <div class="footer-pdf">
+                <p>© 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA</p>
+            </div>
+            </body></html>`;
+            
+            const ventana = window.open('', '_blank');
+            if (!ventana) { mostrarMensaje('❌ Permite ventanas emergentes', true); return; }
+            ventana.document.write(htmlCompleto);
+            ventana.document.close();
+            setTimeout(() => { ventana.print(); }, 500);
+        });
+    </script>
+</body>
+</html>

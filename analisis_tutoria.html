@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Análisis de Tutoría | Grupo 602 | COBAEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            color: #1e2a3e;
+            line-height: 1.5;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+
+        /* ========== MENÚ DE HAMBURGUESA (estándar SITUTOR) ========== */
+        .menu-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-menu-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffb347;
+            background: white;
+        }
+
+        .logo-menu-text {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .logo-menu-text small { font-size: 0.7rem; opacity: 0.8; }
+
+        .hamburguesa {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+        }
+        .hamburguesa span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .hamburguesa.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .hamburguesa.active span:nth-child(2) { opacity: 0; }
+        .hamburguesa.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0b3b2f 0%, #1c6e4a 100%);
+            z-index: 999;
+            transition: right 0.3s ease;
+            padding-top: 5rem;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+        }
+        .menu-panel.open { right: 0; }
+        .menu-panel ul { list-style: none; padding: 0 1rem; }
+        .menu-panel li { margin-bottom: 1rem; }
+        .menu-panel a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            transition: background 0.2s;
+        }
+        .menu-panel a:hover { background: rgba(255,255,255,0.2); }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        .menu-overlay.active { display: block; }
+
+        /* ========== HEADER ========== */
+        .header {
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .school-badge {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Tarjetas de resumen */
+        .resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .tarjeta-resumen {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-top: 4px solid #1a4b6e;
+        }
+        .tarjeta-resumen .numero { font-size: 2rem; font-weight: 700; color: #1a4b6e; }
+        .tarjeta-resumen .etiqueta { font-size: 0.8rem; color: #4a6272; }
+
+        /* Tablas de datos */
+        .seccion-tabla {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .seccion-tabla h2 {
+            font-size: 1.4rem;
+            color: #1a4b6e;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #ffb347;
+            padding-bottom: 0.5rem;
+        }
+        .tabla-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th, td {
+            border: 1px solid #e2edf2;
+            padding: 0.8rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #eef2f5;
+            font-weight: 600;
+            color: #1e4a3a;
+        }
+        .alerta-roja { background-color: #ffe8e8; }
+        .alerta-naranja { background-color: #fff0e0; }
+        .alerta-verde { background-color: #e8f4e8; }
+
+        .btn-cargar {
+            background: #2c7da0;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .btn-cargar:hover { background: #1a4b6e; }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 1.5rem;
+            border-top: 1px solid #cbd5e1;
+        }
+        .footer p { font-size: 0.75rem; color: #4b6f7e; margin-bottom: 0.3rem; }
+
+        @media (max-width: 750px) {
+            .container { padding: 1rem; }
+            th, td { font-size: 0.7rem; padding: 0.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Análisis de Tutoría</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="analisis_tutoria.html">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1>📊 Análisis de Tutoría · Grupo 602</h1>
+            <p>Integración de calificaciones, alertas de formularios 360° y seguimiento de casos</p>
+        </div>
+
+        <!-- Tarjetas de resumen -->
+        <div class="resumen-grid">
+            <div class="tarjeta-resumen"><div class="numero" id="totalAlumnos">38</div><div class="etiqueta">Total de alumnos</div></div>
+            <div class="tarjeta-resumen"><div class="numero" id="alumnosRiesgo">5</div><div class="etiqueta">En riesgo académico</div></div>
+            <div class="tarjeta-resumen"><div class="numero" id="alertasActivas">7</div><div class="etiqueta">Alertas activas (formularios)</div></div>
+            <div class="tarjeta-resumen"><div class="numero" id="casosMediacion">4</div><div class="etiqueta">Casos en mediación</div></div>
+        </div>
+
+        <!-- Sección 1: Calificaciones y seguimiento académico -->
+        <div class="seccion-tabla">
+            <h2>📈 Calificaciones y seguimiento académico</h2>
+            <div class="tabla-container">
+                <table id="tablaCalificaciones">
+                    <thead>
+                        <tr><th>Alumno</th><th>1er Parcial</th><th>2do Parcial</th><th>Promedio</th><th>Estado</th><th>Alertas</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody id="cuerpoCalificaciones">
+                        <!-- Los datos se cargan desde JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: right; margin-top: 0.5rem;">
+                <button class="btn-cargar" id="btnCargarCalif">📂 Cargar datos de ejemplo</button>
+            </div>
+        </div>
+
+        <!-- Sección 2: Alertas de formularios 360° (Docentes, Alumnos, Compañeros, Familia) -->
+        <div class="seccion-tabla">
+            <h2>⚠️ Alertas y observaciones relevantes (Formularios 360°)</h2>
+            <div class="tabla-container">
+                <table id="tablaAlertas">
+                    <thead><tr><th>Alumno</th><th>Fecha</th><th>Fuente</th><th>Observación / Alerta</th><th>Estado</th></tr></thead>
+                    <tbody id="cuerpoAlertas">
+                        <!-- Datos de ejemplo -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sección 3: Alumnos en seguimiento o con situaciones particulares -->
+        <div class="seccion-tabla">
+            <h2>👥 Alumnos en seguimiento (Casos activos de mediación)</h2>
+            <div class="tabla-container">
+                <table id="tablaCasos">
+                    <thead><tr><th>Alumno</th><th>Motivo de seguimiento</th><th>Estrategia de mediación</th><th>Estado</th><th>Última actualización</th></tr></thead>
+                    <tbody id="cuerpoCasos">
+                        <!-- Datos de ejemplo -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+            <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA · COBAEM Plantel 03 Chimalhuacán</p>
+            <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+            <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // ==================== DATOS DE EJEMPLO (SIMULACIÓN) ====================
+        // Aquí en el futuro conectarás con Google Sheets o una base de datos.
+        // Por ahora, estos datos ilustran el potencial de la herramienta.
+
+        const alumnos = [
+            "Guevara Torres Oscar Omar", "Montiel Santiago Ana Danae", "Ramírez Morán Azul Valentina",
+            "Flores Ramírez Cristian Yamil", "Mondragón Lemus Jesús Gael", "Barrera Murillo Hugo",
+            "Cortes Zavala Iris Ailen", "Rosas Serrano Evelyn Jezabel", "Santiago Martínez Ricardo",
+            "González Pérez Danna Paola", "AlixTac Cortes Gustavo Iván", "Anguiano Juárez Mercedes Belén"
+        ];
+
+        // Datos de calificaciones de ejemplo
+        const calificacionesEjemplo = {
+            "Guevara Torres Oscar Omar": { p1: 5.2, p2: 5.8, alertas: ["Bajo rendimiento", "Inasistencias"] },
+            "Montiel Santiago Ana Danae": { p1: 6.5, p2: 6.2, alertas: ["Vulnerabilidad emocional"] },
+            "Ramírez Morán Azul Valentina": { p1: 7.0, p2: 6.8, alertas: ["Ansiedad en exámenes"] },
+            "Flores Ramírez Cristian Yamil": { p1: 7.5, p2: 7.2, alertas: ["Retroceso académico"] },
+            "Mondragón Lemus Jesús Gael": { p1: 8.0, p2: 8.5, alertas: ["Olvida fechas de examen"] },
+            "Barrera Murillo Hugo": { p1: 9.5, p2: 9.8, alertas: [] },
+            "Cortes Zavala Iris Ailen": { p1: 9.2, p2: 9.4, alertas: [] },
+            "Rosas Serrano Evelyn Jezabel": { p1: 9.0, p2: 9.1, alertas: [] },
+            "Santiago Martínez Ricardo": { p1: 8.8, p2: 9.0, alertas: [] },
+            "González Pérez Danna Paola": { p1: 9.3, p2: 9.5, alertas: [] }
+        };
+
+        function renderizarCalificaciones() {
+            const tbody = document.getElementById('cuerpoCalificaciones');
+            if (!tbody) return;
+            let html = '';
+            for (let alumno of alumnos) {
+                const datos = calificacionesEjemplo[alumno] || { p1: 'N/D', p2: 'N/D', alertas: [] };
+                const p1 = datos.p1 !== 'N/D' ? datos.p1.toFixed(1) : 'N/D';
+                const p2 = datos.p2 !== 'N/D' ? datos.p2.toFixed(1) : 'N/D';
+                let promedio = 'N/D';
+                let estado = 'Sin datos';
+                let claseFila = '';
+                if (datos.p1 !== 'N/D' && datos.p2 !== 'N/D') {
+                    const prom = (datos.p1 + datos.p2) / 2;
+                    promedio = prom.toFixed(1);
+                    if (prom < 6.0) { estado = 'En riesgo'; claseFila = 'alerta-roja'; }
+                    else if (prom < 7.0) { estado = 'Seguimiento'; claseFila = 'alerta-naranja'; }
+                    else { estado = 'En curso'; claseFila = 'alerta-verde'; }
+                }
+                const alertasTexto = datos.alertas.length ? datos.alertas.join(', ') : 'Sin alertas';
+                html += `<tr class="${claseFila}">
+                            <td>${alumno}</td>
+                            <td>${p1}</td>
+                            <td>${p2}</td>
+                            <td>${promedio}</td>
+                            <td>${estado}</td>
+                            <td>${alertasTexto}</td>
+                            <td><button class="btn-cargar" style="background:#ffb347; color:#1e2a3e;" onclick="alert('Acción para ${alumno}')">📌 Ver detalles</button></td>
+                         </tr>`;
+            }
+            tbody.innerHTML = html;
+        }
+
+        // Alertas de formularios
+        const alertasEjemplo = [
+            { alumno: "Guevara Torres Oscar Omar", fecha: "2026-03-15", fuente: "Docente (Matemáticas)", obs: "No ha entregado 3 tareas consecutivas", estado: "Pendiente" },
+            { alumno: "Guevara Torres Oscar Omar", fecha: "2026-03-20", fuente: "Autopercepción", obs: "Reporta no entender cómo lo evalúan", estado: "En proceso" },
+            { alumno: "Montiel Santiago Ana Danae", fecha: "2026-03-18", fuente: "Familia", obs: "Madre reporta situación emocional difícil en casa", estado: "Atendido" },
+            { alumno: "Ramírez Morán Azul Valentina", fecha: "2026-03-22", fuente: "Autopercepción", obs: "Ansiedad muy alta antes de exámenes", estado: "En proceso" },
+            { alumno: "Flores Ramírez Cristian Yamil", fecha: "2026-03-10", fuente: "Docente (Física)", obs: "Bajo rendimiento, no participa", estado: "Pendiente" }
+        ];
+
+        function renderizarAlertas() {
+            const tbody = document.getElementById('cuerpoAlertas');
+            if (!tbody) return;
+            let html = '';
+            for (let alerta of alertasEjemplo) {
+                html += `<tr>
+                            <td>${alerta.alumno}</td>
+                            <td>${alerta.fecha}</td>
+                            <td>${alerta.fuente}</td>
+                            <td>${alerta.obs}</td>
+                            <td>${alerta.estado}</td>
+                         </tr>`;
+            }
+            tbody.innerHTML = html;
+        }
+
+        // Casos en seguimiento
+        const casosEjemplo = [
+            { alumno: "Guevara Torres Oscar Omar", motivo: "3 materias arrastradas, bajo rendimiento", estrategia: "Coordinación con docentes, tutoría semanal", estado: "🟡 En proceso", fecha: "2026-03-01" },
+            { alumno: "Montiel Santiago Ana Danae", motivo: "Vulnerabilidad emocional declarada", estrategia: "Canalización a Orientación Construye T", estado: "🟢 Activo", fecha: "2026-03-05" },
+            { alumno: "Ramírez Morán Azul Valentina", motivo: "Ansiedad significativa", estrategia: "Técnicas de manejo de ansiedad, seguimiento", estado: "🟢 Activo", fecha: "2026-03-10" },
+            { alumno: "Flores Ramírez Cristian Yamil", motivo: "Retroceso académico", estrategia: "Seguimiento quincenal, refuerzo académico", estado: "🟡 En proceso", fecha: "2026-03-12" }
+        ];
+
+        function renderizarCasos() {
+            const tbody = document.getElementById('cuerpoCasos');
+            if (!tbody) return;
+            let html = '';
+            for (let caso of casosEjemplo) {
+                html += `<tr>
+                            <td>${caso.alumno}</td>
+                            <td>${caso.motivo}</td>
+                            <td>${caso.estrategia}</td>
+                            <td>${caso.estado}</td>
+                            <td>${caso.fecha}</td>
+                         </tr>`;
+            }
+            tbody.innerHTML = html;
+        }
+
+        // Evento para cargar datos (simular importación desde Google Sheets)
+        document.getElementById('btnCargarCalif')?.addEventListener('click', () => {
+            alert("✅ En una versión futura, aquí cargarás los datos reales desde Google Sheets.\n\nPor ahora, se muestran datos de ejemplo.");
+            renderizarCalificaciones();
+        });
+
+        renderizarCalificaciones();
+        renderizarAlertas();
+        renderizarCasos();
+    </script>
+</body>
+</html>

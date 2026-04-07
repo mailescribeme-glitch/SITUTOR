@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Sistema de Comunicación Tutorial | COBAEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            color: #1e2a3e;
+            line-height: 1.5;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+
+        /* ========== MENÚ DE HAMBURGUESA FIJO ========== */
+        .menu-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-menu-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffb347;
+            background: white;
+        }
+
+        .logo-menu-text {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .logo-menu-text small { font-size: 0.7rem; opacity: 0.8; }
+
+        .hamburguesa {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+        }
+        .hamburguesa span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .hamburguesa.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .hamburguesa.active span:nth-child(2) { opacity: 0; }
+        .hamburguesa.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0b3b2f 0%, #1c6e4a 100%);
+            z-index: 999;
+            transition: right 0.3s ease;
+            padding-top: 5rem;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+        }
+        .menu-panel.open { right: 0; }
+        .menu-panel ul { list-style: none; padding: 0 1rem; }
+        .menu-panel li { margin-bottom: 1rem; }
+        .menu-panel a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            transition: background 0.2s;
+        }
+        .menu-panel a:hover { background: rgba(255,255,255,0.2); }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        .menu-overlay.active { display: block; }
+
+        /* ========== HEADER PRINCIPAL ========== */
+        .header {
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+        .header p { opacity: 0.9; font-size: 1rem; max-width: 700px; margin: 0 auto; }
+        .school-badge {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ========== SECCIONES GENERALES ========== */
+        .seccion {
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            background: white;
+        }
+        .seccion:hover { transform: translateY(-3px); }
+        .seccion h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 3px solid #ffb347;
+            padding-bottom: 0.5rem;
+            color: #1a4b6e;
+        }
+
+        .seccion-que-es { background: white; border-top: 5px solid #1a4b6e; }
+        .seccion-360 { background: #f0f7f0; border-top: 5px solid #4a8c3f; }
+        .seccion-recursos { background: #fef9e8; border-top: 5px solid #ffb347; }
+        .seccion-analisis { background: #e8f0fe; border-top: 5px solid #2c7da0; }
+
+        .grid-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .accion-item {
+            flex: 1;
+            min-width: 180px;
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2edf2;
+        }
+        .accion-item .icono { font-size: 1.8rem; }
+
+        .grid-recursos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .recurso-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid #dee7ef;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .recurso-card:hover { transform: translateY(-5px); }
+        .recurso-card h3 { font-size: 1.2rem; margin: 0.5rem 0; color: #1a4b6e; }
+        .badge {
+            background: #e9ecef;
+            border-radius: 100px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Grid de herramientas de análisis (4 tarjetas) */
+        .analisis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .analisis-card {
+            background: #f8fafc;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid #dee7ef;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+        }
+        .analisis-card:hover { transform: translateY(-5px); background: #eef2f5; }
+        .analisis-card h3 { font-size: 1.2rem; margin: 0.5rem 0; color: #1a4b6e; }
+        .analisis-card p { font-size: 0.85rem; margin: 0.5rem 0; flex-grow: 1; }
+        .icono-analisis { font-size: 2.5rem; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: #1c6e4a;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-360 { background: #4a8c3f; }
+        .btn-360:hover { background: #2c5a2e; }
+        .btn-recurso { background: #b85c00; }
+        .btn-recurso:hover { background: #8c4500; }
+        .btn-taller { background: #2c7da0; }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 1.5rem;
+            border-top: 1px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .footer-contenido { max-width: 800px; margin: 0 auto; }
+        .footer p { margin-bottom: 0.5rem; font-size: 0.75rem; color: #4b6f7e; }
+        .footer a { color: #1c6e4a; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* Overlay de contraseña */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .password-modal {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+        }
+        .password-modal h3 { color: #1a4b6e; margin-bottom: 1rem; }
+        .password-modal input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 1rem;
+            font-size: 1rem;
+        }
+        .password-modal button {
+            background: #1c6e4a;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .error-msg { color: #dc2626; margin-top: 0.5rem; font-size: 0.8rem; }
+
+        @media (max-width: 750px) {
+            .container { padding: 1rem; }
+            .header h1 { font-size: 1.6rem; }
+            .grid-acciones { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Sistema de Comunicación Tutorial</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="#seccion-analisis">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1>SITUTOR</h1>
+            <p>Sistema de Comunicación Tutorial · Información oportuna para la prevención y el éxito académico</p>
+        </div>
+
+        <!-- SECCIÓN 1: ¿QUÉ ES SITUTOR? + ACCIONES DE MEDIACIÓN -->
+        <div id="seccion-que-es" class="seccion seccion-que-es">
+            <h2>📖 ¿Qué es SITUTOR?</h2>
+            <p style="margin-bottom: 1rem;">SITUTOR es el <strong>Sistema de Comunicación Tutorial</strong> del COBAEM Plantel 03 Chimalhuacán. Su objetivo es fortalecer el acompañamiento académico y emocional de los estudiantes a través de herramientas digitales, formularios de retroalimentación y recursos de autoayuda.</p>
+            <h3 style="color: #1a4b6e; margin: 1rem 0 0.5rem;">🤝 Acciones de mediación y prevención</h3>
+            <div class="grid-acciones">
+                <div class="accion-item"><div class="icono">📞</div><strong>Diálogo con docentes</strong><p style="font-size: 0.75rem;">Coordinación para ajustar estrategias de apoyo.</p></div>
+                <div class="accion-item"><div class="icono">🧠</div><strong>Canalización a Orientación</strong><p style="font-size: 0.75rem;">Derivación a Construye T para apoyo psicosocial.</p></div>
+                <div class="accion-item"><div class="icono">👥</div><strong>Tutorías grupales</strong><p style="font-size: 0.75rem;">Sesiones para abordar problemáticas comunes.</p></div>
+                <div class="accion-item"><div class="icono">🏠</div><strong>Contacto con familias</strong><p style="font-size: 0.75rem;">Comunicación oportuna con padres de familia.</p></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: RETROALIMENTACIÓN 360° -->
+        <div id="seccion-360" class="seccion seccion-360">
+            <h2>🔄 Retroalimentación 360°</h2>
+            <p>Una visión completa de tu desempeño. Integramos la perspectiva de <strong>docentes, el propio alumno, sus compañeros y su familia</strong> para obtener una visión integral de fortalezas y áreas de oportunidad.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0;">
+                <div style="flex:1; min-width: 200px; background: white; border-radius: 1rem; padding: 0.8rem; text-align: center;"><div style="font-size: 2rem;">👩‍🏫</div><strong>Docentes</strong><p style="font-size: 0.7rem;">Desempeño académico</p></div>
+                <div style="flex:1; min-width: 200px; background: white; border-radius: 1rem; padding: 0.8rem; text-align: center;"><div style="font-size: 2rem;">🧑‍🎓</div><strong>Autopercepción</strong><p style="font-size: 0.7rem;">Estado de ánimo y bienestar</p></div>
+                <div style="flex:1; min-width: 200px; background: white; border-radius: 1rem; padding: 0.8rem; text-align: center;"><div style="font-size: 2rem;">🤝</div><strong>Compañeros</strong><p style="font-size: 0.7rem;">Trabajo en equipo</p></div>
+                <div style="flex:1; min-width: 200px; background: white; border-radius: 1rem; padding: 0.8rem; text-align: center;"><div style="font-size: 2rem;">👪</div><strong>Familia</strong><p style="font-size: 0.7rem;">Hábitos en casa</p></div>
+            </div>
+            <div style="text-align: center;"><a href="retroalimentacion_360.html" class="btn btn-360">🔄 ACCEDER A FORMULARIOS 360° →</a></div>
+        </div>
+
+        <!-- SECCIÓN 3: RECURSOS DE APOYO (Sin Banco de Rúbricas ni Tablero de Logros) -->
+        <div id="seccion-recursos" class="seccion seccion-recursos">
+            <h2>📚 Recursos de apoyo para tu desarrollo</h2>
+            <p>Herramientas diseñadas para fortalecer tu bienestar emocional, organización, estudio y motivación.</p>
+            <div class="grid-recursos">
+                <div class="recurso-card"><span class="badge" style="background:#e0f0f5;">🧠 TALLER AUTÓNOMO</span><h3>🧘 Domino mi estrés, transformo mi desempeño</h3><p>3 técnicas prácticas · 30 minutos · A tu ritmo</p><a href="taller_regulacion_emocional.html" class="btn btn-taller">🧘 ACCEDER AL TALLER →</a></div>
+                <div class="recurso-card"><span class="badge" style="background:#fef0e0;">📋 PLANIFICACIÓN</span><h3>📋 Agenda Covey Interactiva</h3><p>Los 7 Hábitos de los Adolescentes Altamente Efectivos</p><a href="agenda_covey.html" class="btn btn-recurso">📋 ACCEDER A LA AGENDA →</a></div>
+                <div class="recurso-card"><span class="badge" style="background:#e8e8f0;">📚 TÉCNICAS DE ESTUDIO</span><h3>📖 Infografía interactiva</h3><p>6 técnicas comprobadas para estudiar mejor</p><a href="tecnicas_estudio.html" class="btn btn-recurso">📖 VER TÉCNICAS →</a></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: ANÁLISIS DE TUTORÍA (4 TARJETAS: 3 protegidas, 1 libre) -->
+        <div id="seccion-analisis" class="seccion seccion-analisis">
+            <h2>📊 Análisis de Tutoría</h2>
+            <p>Herramientas profesionales para el seguimiento, evaluación y mejora de la acción tutorial. Accede a los paneles de control y reportes generados por SITUTOR.</p>
+            <div class="analisis-grid">
+                <!-- Tarjeta 1: Análisis de Tutoría (Protegida) -->
+                <div class="analisis-card protected" data-url="analisis_tutoria.html">
+                    <div class="icono-analisis">📈</div>
+                    <h3>Análisis de Tutoría</h3>
+                    <p>Visualiza calificaciones, alertas de formularios 360° y alumnos en seguimiento. El centro neurálgico del análisis tutorial.</p>
+                    <div class="btn" style="background: #2c7da0;">📊 ACCEDER →</div>
+                </div>
+                <!-- Tarjeta 2: Tablero de Logros (Protegida) -->
+                <div class="analisis-card protected" data-url="tablero_logros.html">
+                    <div class="icono-analisis">🏆</div>
+                    <h3>Tablero de Logros</h3>
+                    <p>Sistema de gamificación con puntajes, rangos (Líder, Avanzado, Aprendiz, Inicial) e insignias por esfuerzo y colaboración.</p>
+                    <div class="btn" style="background: #2c7da0;">🏆 VER TABLERO →</div>
+                </div>
+                <!-- Tarjeta 3: Reporte de Funcionalidad (Protegida) -->
+                <div class="analisis-card protected" data-url="reporte_funcionalidad_situtor.html">
+                    <div class="icono-analisis">📋</div>
+                    <h3>Reporte de Funcionalidad</h3>
+                    <p>Evalúa el rendimiento de SITUTOR, su usabilidad, impacto y genera reportes para la mejora continua del sistema.</p>
+                    <div class="btn" style="background: #2c7da0;">📋 GENERAR REPORTE →</div>
+                </div>
+                <!-- Tarjeta 4: Banco de Rúbricas (Acceso LIBRE, sin contraseña) -->
+                <div class="analisis-card" data-url="banco_rubricas.html">
+                    <div class="icono-analisis">📋</div>
+                    <h3>Banco de Rúbricas</h3>
+                    <p>Consulta los criterios de evaluación antes de entregar tus actividades. Encuentra rúbricas por materia y comparte las tuyas.</p>
+                    <div class="btn" style="background: #b85c00;">📋 VER RÚBRICAS →</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Navegación suave desde el menú
+        document.querySelectorAll('.menu-panel a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                closeMenu();
+            });
+        });
+
+        // ==================== PROTECCIÓN POR CONTRASEÑA ====================
+        const CONTRASENA = "qwepoi";
+        let pendingUrl = null;
+
+        function verificarContrasena(url) {
+            const overlay = document.createElement('div');
+            overlay.className = 'password-overlay';
+            overlay.innerHTML = `
+                <div class="password-modal">
+                    <h3>🔐 Acceso restringido</h3>
+                    <p>Esta sección es exclusiva para el Tutor Grupal.</p>
+                    <input type="password" id="claveAcceso" placeholder="Contraseña" autofocus>
+                    <button id="btnVerificarClave">Ingresar</button>
+                    <div id="errorClave" class="error-msg"></div>
+                    <hr style="margin: 1rem 0;">
+                    <button id="btnCancelar" style="background:#94a3b8;">Cancelar</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            const input = document.getElementById('claveAcceso');
+            const btnVerificar = document.getElementById('btnVerificarClave');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const errorDiv = document.getElementById('errorClave');
+
+            function verificar() {
+                if (input.value === CONTRASENA) {
+                    overlay.remove();
+                    window.location.href = url;
+                } else {
+                    errorDiv.textContent = '❌ Contraseña incorrecta. Acceso denegado.';
+                    input.value = '';
+                    input.focus();
+                }
+            }
+
+            btnVerificar.addEventListener('click', verificar);
+            btnCancelar.addEventListener('click', () => overlay.remove());
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') verificar(); });
+            input.focus();
+        }
+
+        // Asignar evento solo a las tarjetas protegidas (con clase 'protected')
+        document.querySelectorAll('.analisis-card.protected').forEach(card => {
+            const url = card.getAttribute('data-url');
+            if (url) {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('btn')) e.stopPropagation();
+                    verificarContrasena(url);
+                });
+            }
+        });
+
+        // Tarjetas sin protección (acceso directo)
+        document.querySelectorAll('.analisis-card:not(.protected)').forEach(card => {
+            const url = card.getAttribute('data-url');
+            if (url) {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('btn')) e.stopPropagation();
+                    window.location.href = url;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

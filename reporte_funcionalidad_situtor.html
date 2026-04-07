@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Reporte de Funcionalidad | Evaluación del Sistema | COBAEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            color: #1e2a3e;
+            line-height: 1.5;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+
+        /* ========== MENÚ DE HAMBURGUESA (estándar SITUTOR) ========== */
+        .menu-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-menu-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffb347;
+            background: white;
+        }
+
+        .logo-menu-text {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .logo-menu-text small { font-size: 0.7rem; opacity: 0.8; }
+
+        .hamburguesa {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+        }
+        .hamburguesa span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .hamburguesa.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .hamburguesa.active span:nth-child(2) { opacity: 0; }
+        .hamburguesa.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0b3b2f 0%, #1c6e4a 100%);
+            z-index: 999;
+            transition: right 0.3s ease;
+            padding-top: 5rem;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+        }
+        .menu-panel.open { right: 0; }
+        .menu-panel ul { list-style: none; padding: 0 1rem; }
+        .menu-panel li { margin-bottom: 1rem; }
+        .menu-panel a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            transition: background 0.2s;
+        }
+        .menu-panel a:hover { background: rgba(255,255,255,0.2); }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        .menu-overlay.active { display: block; }
+
+        /* ========== HEADER PRINCIPAL ========== */
+        .header {
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .school-badge {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ========== FORMULARIO ========== */
+        .form-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2edf2;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1a4b6e;
+        }
+        .required { color: #dc2626; }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.8rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1c6e4a;
+            box-shadow: 0 0 0 3px rgba(28,110,74,0.1);
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .checkbox-group label, .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        .checkbox-group input, .radio-group input { width: auto; }
+
+        /* Botones */
+        .botonera {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+        .btn-enviar { background: #1c6e4a; color: white; }
+        .btn-enviar:hover { background: #0f553b; }
+        .btn-pdf { background: #dc2626; color: white; }
+        .btn-pdf:hover { background: #b91c1c; }
+        .btn-resumen { background: #2c7da0; color: white; }
+        .btn-resumen:hover { background: #1a4b6e; }
+        .btn-regresar { background: #ffb347; color: #1e2a3e; }
+        .btn-regresar:hover { background: #e6981a; color: white; }
+
+        .resumen {
+            background: #eef2f5;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 1.5rem;
+            border-top: 1px solid #cbd5e1;
+        }
+        .footer p { font-size: 0.75rem; color: #4b6f7e; margin-bottom: 0.3rem; }
+        .footer a { color: #1c6e4a; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 750px) {
+            .container { padding: 1rem; }
+            .header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Reporte de Funcionalidad</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="analisis_tutoria.html">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="school-badge">SITUTOR · Sistema de Comunicación Tutorial</div>
+            <h1>📋 Reporte de Funcionalidad</h1>
+            <p>Evalúa el rendimiento, la usabilidad y el impacto de SITUTOR. Tus observaciones son clave para la mejora continua.</p>
+        </div>
+
+        <div class="form-card">
+            <form id="reporteForm">
+                <!-- SECCIÓN 1: DATOS GENERALES -->
+                <div style="background:#f8fafc; border-radius:1rem; padding:1rem; margin-bottom:1.5rem;">
+                    <h3 style="color:#1a4b6e; margin-bottom:1rem;">📌 1. Datos generales del reporte</h3>
+                    <div class="form-group">
+                        <label>📅 Fecha del reporte <span class="required">*</span></label>
+                        <input type="date" id="fechaReporte" required>
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Quién reporta <span class="required">*</span></label>
+                        <input type="text" id="reportaNombre" value="José Huidobro Espejel" required>
+                    </div>
+                    <div class="form-group">
+                        <label>📚 Grupo(s) en los que opera SITUTOR <span class="required">*</span></label>
+                        <input type="text" id="grupos" placeholder="Ej: 602, 203, 401" value="602" required>
+                    </div>
+                    <div class="form-group">
+                        <label>📊 Período de análisis <span class="required">*</span></label>
+                        <select id="periodo" required>
+                            <option value="">Selecciona...</option>
+                            <option value="Semana 1-4 (Primer parcial)">Semana 1-4 (Primer parcial)</option>
+                            <option value="Semana 5-8 (Segundo parcial)">Semana 5-8 (Segundo parcial)</option>
+                            <option value="Semana 9-13 (Tercer parcial)">Semana 9-13 (Tercer parcial)</option>
+                            <option value="Ciclo completo">Ciclo completo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: FUNCIONALIDAD Y USABILIDAD -->
+                <div style="background:#f8fafc; border-radius:1rem; padding:1rem; margin-bottom:1.5rem;">
+                    <h3 style="color:#1a4b6e; margin-bottom:1rem;">🛠️ 2. Funcionalidad y usabilidad</h3>
+                    <div class="form-group">
+                        <label>¿Qué módulos de SITUTOR has utilizado?</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="Portal principal (index.html)"> 🌐 Portal principal</label>
+                            <label><input type="checkbox" value="Formularios 360°"> 📋 Formularios 360°</label>
+                            <label><input type="checkbox" value="Taller de Regulación Emocional"> 🧘 Taller de Regulación</label>
+                            <label><input type="checkbox" value="Agenda Covey"> 📋 Agenda Covey</label>
+                            <label><input type="checkbox" value="Técnicas de Estudio"> 📚 Técnicas de Estudio</label>
+                            <label><input type="checkbox" value="Banco de Rúbricas"> 📖 Banco de Rúbricas</label>
+                            <label><input type="checkbox" value="Tablero de Logros"> 🏆 Tablero de Logros</label>
+                            <label><input type="checkbox" value="Análisis de Tutoría"> 📊 Análisis de Tutoría</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Cómo calificas la facilidad de uso (UX) de la plataforma?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="ux" value="Excelente"> ⭐ Excelente</label>
+                            <label><input type="radio" name="ux" value="Buena"> ✅ Buena</label>
+                            <label><input type="radio" name="ux" value="Regular"> 📊 Regular</label>
+                            <label><input type="radio" name="ux" value="Mala"> ⚠️ Mala</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Has encontrado algún error técnico o bug?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="errores" value="Sí, varios"> ❌ Sí, varios</label>
+                            <label><input type="radio" name="errores" value="Sí, alguno"> ⚠️ Sí, alguno</label>
+                            <label><input type="radio" name="errores" value="No"> ✅ No</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>🔧 Si detectaste errores, descríbelos (opcional)</label>
+                        <textarea id="erroresDesc" rows="2" placeholder="Ej: El menú de hamburguesa no cierra en celulares, el PDF de la agenda no se genera..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: INDICADORES DE IMPACTO -->
+                <div style="background:#f8fafc; border-radius:1rem; padding:1rem; margin-bottom:1.5rem;">
+                    <h3 style="color:#1a4b6e; margin-bottom:1rem;">📊 3. Indicadores de impacto</h3>
+                    <div class="form-group">
+                        <label>📈 Número aproximado de alumnos que han utilizado SITUTOR</label>
+                        <input type="number" id="alumnosUsuarios" placeholder="Ej: 32">
+                    </div>
+                    <div class="form-group">
+                        <label>📋 Formularios 360° recibidos en el período</label>
+                        <input type="number" id="formulariosRecibidos" placeholder="Ej: 45">
+                    </div>
+                    <div class="form-group">
+                        <label>🚨 Alertas urgentes atendidas a través del sistema</label>
+                        <input type="number" id="alertasAtendidas" placeholder="Ej: 5">
+                    </div>
+                    <div class="form-group">
+                        <label>👥 Casos canalizados a Orientación gracias a la detección temprana</label>
+                        <input type="number" id="casosOrientacion" placeholder="Ej: 2">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: LOGROS Y ÁREAS DE OPORTUNIDAD -->
+                <div style="background:#f8fafc; border-radius:1rem; padding:1rem; margin-bottom:1.5rem;">
+                    <h3 style="color:#1a4b6e; margin-bottom:1rem;">✅ 4. Logros y áreas de oportunidad de SITUTOR</h3>
+                    <div class="form-group">
+                        <label>🏆 Principales logros alcanzados con SITUTOR</label>
+                        <textarea id="logros" rows="3" placeholder="Ej: Se logró centralizar la comunicación, los alumnos tienen recursos autónomos, se detectaron casos de ansiedad a tiempo..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>⚠️ Áreas de oportunidad o funcionalidades que faltan</label>
+                        <textarea id="areasOportunidad" rows="3" placeholder="Ej: Falta un chatbot de ayuda, los reportes PDF podrían ser más rápidos, integrar recordatorios por correo..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>💡 Sugerencias de mejora para futuras versiones</label>
+                        <textarea id="propuestas" rows="3" placeholder="Ej: Implementar notificaciones automáticas, crear una app móvil, agregar test vocacional..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: EVALUACIÓN GENERAL -->
+                <div style="background:#f8fafc; border-radius:1rem; padding:1rem; margin-bottom:1.5rem;">
+                    <h3 style="color:#1a4b6e; margin-bottom:1rem;">⭐ 5. Evaluación general del sistema</h3>
+                    <div class="form-group">
+                        <label>¿Cómo evalúas la efectividad de SITUTOR para la tutoría?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="efectividad" value="Muy efectivo"> 🌟 Muy efectivo</label>
+                            <label><input type="radio" name="efectividad" value="Efectivo"> ✅ Efectivo</label>
+                            <label><input type="radio" name="efectividad" value="Parcialmente efectivo"> 📊 Parcialmente efectivo</label>
+                            <label><input type="radio" name="efectividad" value="Poco efectivo"> ⚠️ Poco efectivo</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Recomendarías SITUTOR a otros tutores?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="recomendacion" value="Sí, definitivamente"> 👍 Sí, definitivamente</label>
+                            <label><input type="radio" name="recomendacion" value="Sí, con reservas"> 🤔 Sí, con reservas</label>
+                            <label><input type="radio" name="recomendacion" value="No"> 👎 No</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>📌 Comentarios adicionales para el equipo de desarrollo</label>
+                        <textarea id="comentarios" rows="3" placeholder="Sugerencias, solicitudes de apoyo, o comentarios para mejorar SITUTOR..."></textarea>
+                    </div>
+                </div>
+
+                <div class="botonera">
+                    <button type="button" class="btn btn-resumen" onclick="generarResumen()">📋 Ver resumen</button>
+                    <button type="button" class="btn btn-pdf" onclick="generarPDF()">📄 Generar PDF</button>
+                    <button type="button" class="btn btn-enviar" onclick="enviarReporte()">📧 Enviar reporte</button>
+                    <a href="index.html" class="btn btn-regresar">🏠 Regresar a SITUTOR</a>
+                </div>
+            </form>
+            <div id="resumen" class="resumen"></div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+            <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA · COBAEM Plantel 03 Chimalhuacán</p>
+            <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+            <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Fecha actual
+        const hoy = new Date();
+        document.getElementById('fechaReporte').value = hoy.toISOString().slice(0,10);
+
+        function getSelectedCheckboxes(selector) {
+            const valores = [];
+            document.querySelectorAll(selector).forEach(cb => { if (cb.checked) valores.push(cb.value); });
+            return valores;
+        }
+
+        function getSelectedRadio(name) {
+            const radio = document.querySelector(`input[name="${name}"]:checked`);
+            return radio ? radio.value : 'No seleccionado';
+        }
+
+        function generarResumen() {
+            const fecha = document.getElementById('fechaReporte').value;
+            const reporta = document.getElementById('reportaNombre').value;
+            const grupos = document.getElementById('grupos').value || '[Grupo(s)]';
+            const periodo = document.getElementById('periodo').value || '[Período no especificado]';
+            const modulos = getSelectedCheckboxes('.checkbox-group input[type="checkbox"]');
+            const ux = getSelectedRadio('ux');
+            const errores = getSelectedRadio('errores');
+            const erroresDesc = document.getElementById('erroresDesc').value;
+            const alumnosUsuarios = document.getElementById('alumnosUsuarios').value || 'No reportado';
+            const formulariosRecibidos = document.getElementById('formulariosRecibidos').value || 'No reportado';
+            const alertasAtendidas = document.getElementById('alertasAtendidas').value || 'No reportado';
+            const casosOrientacion = document.getElementById('casosOrientacion').value || 'No reportado';
+            const logros = document.getElementById('logros').value || 'No especificado';
+            const areas = document.getElementById('areasOportunidad').value || 'No especificado';
+            const propuestas = document.getElementById('propuestas').value || 'No especificado';
+            const efectividad = getSelectedRadio('efectividad');
+            const recomendacion = getSelectedRadio('recomendacion');
+            const comentarios = document.getElementById('comentarios').value || 'Sin comentarios.';
+
+            const resumen = `
+📋 REPORTE DE FUNCIONALIDAD - SITUTOR
+═══════════════════════════════════════════════════════
+📅 Fecha: ${fecha}
+👤 Reporta: ${reporta}
+📚 Grupo(s): ${grupos}
+📊 Período: ${periodo}
+
+🛠️ MÓDULOS UTILIZADOS:
+${modulos.length ? modulos.map(m => `• ${m}`).join('\n') : '• No se seleccionó ninguno'}
+
+📊 EVALUACIÓN DE USABILIDAD:
+• Facilidad de uso (UX): ${ux}
+• Errores detectados: ${errores}
+${erroresDesc ? `• Descripción de errores: ${erroresDesc}` : ''}
+
+📈 INDICADORES DE IMPACTO:
+• Alumnos usuarios: ${alumnosUsuarios}
+• Formularios 360° recibidos: ${formulariosRecibidos}
+• Alertas atendidas: ${alertasAtendidas}
+• Casos a Orientación: ${casosOrientacion}
+
+✅ LOGROS:
+${logros}
+
+⚠️ ÁREAS DE OPORTUNIDAD:
+${areas}
+
+💡 PROPUESTAS DE MEJORA:
+${propuestas}
+
+⭐ EVALUACIÓN GENERAL:
+• Efectividad: ${efectividad}
+• Recomendación: ${recomendacion}
+
+📌 COMENTARIOS ADICIONALES:
+${comentarios}
+
+═══════════════════════════════════════════════════════
+SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA
+            `;
+            document.getElementById('resumen').textContent = resumen;
+            document.getElementById('resumen').style.display = 'block';
+        }
+
+        function generarPDF() {
+            generarResumen();
+            setTimeout(() => {
+                const contenido = document.getElementById('resumen').textContent;
+                const html = `<!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><title>Reporte SITUTOR</title>
+                <style>body{font-family:Arial;margin:2rem;} pre{white-space:pre-wrap;}</style>
+                </head><body><h1>📋 SITUTOR - Reporte de Funcionalidad</h1><pre>${contenido}</pre>
+                <div style="margin-top:2rem; font-size:0.7rem;">© 2026 José Huidobro Espejel</div></body></html>`;
+                const ventana = window.open('', '_blank');
+                if (!ventana) { alert('❌ Permite ventanas emergentes'); return; }
+                ventana.document.write(html);
+                ventana.document.close();
+                setTimeout(() => ventana.print(), 500);
+            }, 100);
+        }
+
+        function enviarReporte() {
+            generarResumen();
+            setTimeout(() => {
+                const cuerpo = encodeURIComponent(document.getElementById('resumen').textContent);
+                window.location.href = `mailto:josehuidobro03@my.cobaemex.edu.mx?subject=Reporte de Funcionalidad SITUTOR&body=${cuerpo}`;
+                alert('✅ Se abrirá tu correo para enviar el reporte.');
+            }, 100);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Retroalimentación 360° | COBAEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            color: #1e2a3e;
+            line-height: 1.5;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+
+        /* ========== MENÚ DE HAMBURGUESA FIJO ========== */
+        .menu-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-menu-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffb347;
+            background: white;
+        }
+
+        .logo-menu-text {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .logo-menu-text small {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .hamburguesa {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+        }
+
+        .hamburguesa span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburguesa.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+
+        .hamburguesa.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburguesa.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0b3b2f 0%, #1c6e4a 100%);
+            z-index: 999;
+            transition: right 0.3s ease;
+            padding-top: 5rem;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+        }
+
+        .menu-panel.open {
+            right: 0;
+        }
+
+        .menu-panel ul {
+            list-style: none;
+            padding: 0 1rem;
+        }
+
+        .menu-panel li {
+            margin-bottom: 1rem;
+        }
+
+        .menu-panel a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            transition: background 0.2s;
+        }
+
+        .menu-panel a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* ========== HEADER PRINCIPAL ========== */
+        .header {
+            background: linear-gradient(135deg, #0b3b2f 0%, #1c6e4a 100%);
+            color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            font-size: 2.2rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .school-badge {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ========== SECCIÓN ========== */
+        .seccion {
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+        .seccion:hover {
+            transform: translateY(-3px);
+        }
+
+        .seccion h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 3px solid #ffb347;
+            padding-bottom: 0.5rem;
+            color: #1a4b6e;
+        }
+
+        /* Grid de evaluadores */
+        .evaluadores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .evaluador-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            border: 1px solid #e2edf2;
+        }
+
+        .evaluador-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .evaluador-header {
+            padding: 1.2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .header-docente { background: linear-gradient(135deg, #1a5d9c, #2c7da0); }
+        .header-alumno { background: linear-gradient(135deg, #1e6f3f, #4a8c3f); }
+        .header-companero { background: linear-gradient(135deg, #b85c00, #e6981a); }
+        .header-familia { background: linear-gradient(135deg, #5a3e2b, #8c6239); }
+
+        .evaluador-icono {
+            font-size: 2.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .evaluador-header h3 {
+            font-size: 1.3rem;
+        }
+
+        .evaluador-body {
+            padding: 1.2rem;
+        }
+
+        .evaluador-body p {
+            font-size: 0.85rem;
+            color: #4a6272;
+            margin-bottom: 1rem;
+        }
+
+        .evaluador-lista {
+            list-style: none;
+            margin-bottom: 1.2rem;
+        }
+
+        .evaluador-lista li {
+            font-size: 0.8rem;
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: #1c6e4a;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-docente { background: #2c7da0; }
+        .btn-alumno { background: #4a8c3f; }
+        .btn-companero { background: #e6981a; }
+        .btn-familia { background: #8c6239; }
+
+        /* Consejos */
+        .consejos-card {
+            background: #fef9e8;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ffb347;
+        }
+
+        .consejos-card h3 {
+            color: #b85c00;
+            margin-bottom: 0.8rem;
+        }
+
+        .consejos-card ul {
+            margin-left: 1.5rem;
+        }
+
+        .consejos-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Botonera */
+        .botonera {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-regresar {
+            background: #ffb347;
+            color: #1e2a3e;
+        }
+
+        .btn-regresar:hover {
+            background: #e6981a;
+            color: white;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 1.5rem;
+            border-top: 1px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .footer-contenido {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: #4b6f7e;
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1a4b6e;
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-licencia {
+            font-size: 0.65rem;
+            margin-top: 0.5rem;
+            color: #94a3b8;
+        }
+
+        .footer a {
+            color: #1c6e4a;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 750px) {
+            .container {
+                padding: 1rem;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .evaluadores-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">
+                SITUTOR<br>
+                <small>Sistema de Comunicación Tutorial</small>
+            </div>
+        </div>
+        <button class="hamburguesa" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <!-- Panel desplegable del menú -->
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="index.html#seccion-analisis">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1><span>🔄</span> Retroalimentación 360°</h1>
+            <p>Una visión completa para tu crecimiento · Conoce cómo te ven tus profesores, tu familia, tus compañeros y tú mismo</p>
+        </div>
+
+        <!-- Introducción -->
+        <div class="seccion">
+            <h2>🎯 ¿Qué es la retroalimentación 360°?</h2>
+            <p>Es una herramienta poderosa que integra la perspectiva de <strong>docentes, el propio alumno, sus compañeros y su familia</strong> para obtener una visión integral de su desempeño, hábitos y áreas de oportunidad. ¡Cada opinión es valiosa!</p>
+        </div>
+
+        <!-- Grid de evaluadores -->
+        <div class="evaluadores-grid">
+            <!-- 1. Docentes -->
+            <div class="evaluador-card">
+                <div class="evaluador-header header-docente">
+                    <div class="evaluador-icono">👩‍🏫</div>
+                    <h3>Docentes</h3>
+                </div>
+                <div class="evaluador-body">
+                    <p><strong>¿Qué evalúan?</strong></p>
+                    <ul class="evaluador-lista">
+                        <li>📋 Asistencia y puntualidad</li>
+                        <li>📝 Cumplimiento de tareas</li>
+                        <li>🎯 Desempeño académico</li>
+                        <li>💬 Participación en clase</li>
+                    </ul>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1bH-95jR6D1w-8NAmcP0zYcaqC9MDEwwSRX17UafNUij67g/viewform?usp=sharing" class="btn btn-docente" target="_blank" rel="noopener noreferrer">
+                        📋 IR AL FORMULARIO DOCENTE →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Alumnos (Autopercepción) -->
+            <div class="evaluador-card">
+                <div class="evaluador-header header-alumno">
+                    <div class="evaluador-icono">🧑‍🎓</div>
+                    <h3>Autopercepción</h3>
+                </div>
+                <div class="evaluador-body">
+                    <p><strong>¿Qué evalúas de ti mismo?</strong></p>
+                    <ul class="evaluador-lista">
+                        <li>💖 Estado de ánimo general</li>
+                        <li>📚 Claridad en la evaluación</li>
+                        <li>⏰ Carga académica</li>
+                        <li>🤔 Dudas o inquietudes</li>
+                    </ul>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeVl8X5ZZpVX_1PzhnhS7fOJFhV8JSaxs6FRjYSYGMrx0R1IQ/viewform?usp=sharing" class="btn btn-alumno" target="_blank" rel="noopener noreferrer">
+                        📋 IR AL FORMULARIO ALUMNO →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Compañeros (Coevaluación) -->
+            <div class="evaluador-card">
+                <div class="evaluador-header header-companero">
+                    <div class="evaluador-icono">🤝</div>
+                    <h3>Compañeros</h3>
+                </div>
+                <div class="evaluador-body">
+                    <p><strong>¿Qué evalúan de ti?</strong></p>
+                    <ul class="evaluador-lista">
+                        <li>🤝 Trabajo en equipo</li>
+                        <li>💬 Comunicación y respeto</li>
+                        <li>⭐ Calidad de colaboración</li>
+                        <li>🎯 Cumplimiento de tareas grupales</li>
+                    </ul>
+                    <a href="https://forms.gle/H2HW2dMmqu1no4qd6" class="btn btn-companero" target="_blank" rel="noopener noreferrer">
+                        📋 IR AL FORMULARIO COMPAÑEROS →
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4. Familia (Padres/Tutores) -->
+            <div class="evaluador-card">
+                <div class="evaluador-header header-familia">
+                    <div class="evaluador-icono">👪</div>
+                    <h3>Familia</h3>
+                </div>
+                <div class="evaluador-body">
+                    <p><strong>¿Qué evalúa tu familia?</strong></p>
+                    <ul class="evaluador-lista">
+                        <li>🏠 Hábitos de estudio en casa</li>
+                        <li>📚 Responsabilidad y autonomía</li>
+                        <li>💖 Bienestar emocional</li>
+                        <li>🤝 Apoyo familiar</li>
+                    </ul>
+                    <a href="https://forms.gle/s9msHrWAyEBmkxaZ9" class="btn btn-familia" target="_blank" rel="noopener noreferrer">
+                        📋 IR AL FORMULARIO PADRES →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consejos para una buena retroalimentación -->
+        <div class="consejos-card">
+            <h3>💡 Consejos para dar una buena retroalimentación</h3>
+            <ul>
+                <li><strong>Sé honesto y respetuoso:</strong> La retroalimentación es una herramienta de crecimiento, no de crítica destructiva.</li>
+                <li><strong>Sé específico:</strong> En lugar de "participa poco", di "podría participar más en las discusiones del equipo".</li>
+                <li><strong>Reconoce fortalezas:</strong> Señalar lo que se hace bien es tan importante como señalar áreas de mejora.</li>
+                <li><strong>Ofrece sugerencias:</strong> Propón acciones concretas para mejorar, no solo señales problemas.</li>
+                <li><strong>Confidencialidad:</strong> Tus respuestas son confidenciales y solo las revisa el Tutor Grupal.</li>
+            </ul>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="botonera">
+            <a href="index.html" class="btn btn-regresar">🏠 Regresar a SITUTOR</a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p class="footer-copyright">© 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p class="footer-licencia">🔐 Permitido su uso para fines educativos citando la fuente.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== MENÚ DE HAMBURGUESA ====================
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+
+        function closeMenu() {
+            menuPanel.classList.remove('open');
+            menuOverlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
+
+        function openMenu() {
+            menuPanel.classList.add('open');
+            menuOverlay.classList.add('active');
+            menuToggle.classList.add('active');
+        }
+
+        menuToggle.addEventListener('click', () => {
+            if (menuPanel.classList.contains('open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        menuOverlay.addEventListener('click', closeMenu);
+    </script>
+</body>
+</html>
