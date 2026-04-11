@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Test de Estilos de Aprendizaje VARK</title>
+    
+    <!-- CSS externo común de SITUTOR -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <style>
+        /* Estilos específicos del test VARK (complementan a situtor.css) */
+        .form-datos {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-gray-300);
+        }
+        .form-datos h2 { color: var(--color-primary); margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.3rem; color: var(--color-primary); }
+        .form-group input { width: 100%; padding: 0.7rem; border: 1px solid var(--color-gray-400); border-radius: var(--radius-md); font-size: 1rem; }
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; min-width: 200px; }
+        
+        .progress-panel {
+            background: #f8fafd; padding: 1rem 2rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;
+        }
+        .missing-buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; max-height: 100px; overflow-y: auto; background: #eef3fa; border-radius: 20px; padding: 0.5rem; }
+        .missing-btn { background: #f0f4f9; border: 1px solid #cbdde9; border-radius: 30px; padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .missing-btn.missing { background: #ffe6e5; border-color: #e06c6c; color: #b13e3e; }
+        .missing-btn.answered { background: #dff0e6; border-color: #2c7da0; color: #1c5a78; }
+        .missing-btn:hover { transform: scale(1.05); }
+        
+        .question-card {
+            background: white; border-radius: 1.2rem; border: 1px solid var(--color-gray-300);
+            margin-bottom: 1.2rem; padding: 1rem 1.5rem; transition: box-shadow 0.2s;
+        }
+        .question-card:hover { box-shadow: var(--shadow-md); }
+        .question-card.missing-highlight { border-left: 6px solid var(--color-danger); background: #fff9f9; }
+        .question-num { font-weight: 700; background: #eef3fc; display: inline-block; padding: 0.2rem 0.8rem; border-radius: 40px; font-size: 0.75rem; margin-bottom: 0.6rem; }
+        .question-text { font-size: 1rem; font-weight: 500; margin-bottom: 1rem; color: var(--color-gray-800); }
+        .likert { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .likert label { background: #f5f9fe; padding: 6px 14px; border-radius: 40px; font-size: 0.8rem; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: 1px solid #d4e0ea; transition: all 0.2s; }
+        .likert label:hover { background: #e8f0fe; transform: scale(1.02); }
+        .likert input { accent-color: #2c7da0; margin: 0; }
+        
+        .actions { display: flex; justify-content: center; gap: 1rem; margin: 1rem 0 2rem; flex-wrap: wrap; }
+        .results-container { background: #eef3fa; border-radius: var(--radius-lg); padding: 1.8rem; border-left: 6px solid var(--color-primary-light); margin-top: 2rem; }
+        .score-bars { display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0; }
+        .score-item { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .score-label { width: 200px; font-weight: 700; color: var(--color-primary); }
+        .bar-bg { flex: 1; background: #d9e2ec; border-radius: 30px; height: 28px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 30px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 0.75rem; font-weight: bold; }
+        .saved-badge { background: #e8f0fe; border-radius: var(--radius-full); padding: 0.2rem 0.8rem; font-size: 0.7rem; display: inline-block; margin-left: 1rem; }
+        @media (max-width: 750px) { .score-label { width: 100%; } .form-row { flex-direction: column; } .progress-panel { flex-direction: column; align-items: stretch; } }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA (estándar SITUTOR) -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Estilos de Aprendizaje</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="test_vocacional.html">🎓 Test Vocacional</a></li>
+            <li><a href="estilos_aprendizaje.html">📘 Estilos de Aprendizaje</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">SITUTOR · Modelo VARK (Neil Fleming)</div>
+            <h1>🎨 Test de Estilos de Aprendizaje</h1>
+            <p>20 preguntas · Descubre si tu preferencia es Visual, Auditiva, Lectoescritura o Kinestésica</p>
+        </div>
+
+        <!-- Formulario de datos personales -->
+        <div id="datosForm" class="form-datos">
+            <h2>📝 Tus datos</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre completo *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Ana Laura Méndez">
+                </div>
+                <div class="form-group">
+                    <label>Escuela / Grado *</label>
+                    <input type="text" id="escuela" placeholder="Ej: COBAEM, ENP, Universidad">
+                </div>
+            </div>
+            <button id="iniciarTestBtn" class="btn btn-primary">✨ Iniciar test de estilos</button>
+            <button id="cargarUltimoResultadoBtn" class="btn btn-secondary" style="margin-left: 0.5rem;">📂 Cargar último resultado</button>
+        </div>
+
+        <!-- Sección del test (oculta al inicio) -->
+        <div id="testSection" class="hidden">
+            <div class="progress-panel">
+                <div class="stats">📊 Progreso: <span id="answeredCount">0</span> / <span id="totalCount">20</span> respondidas</div>
+                <div class="missing-buttons" id="missingButtonsContainer"></div>
+            </div>
+            <div id="questionsContainer"></div>
+            <div class="actions">
+                <button id="resetTestBtn" class="btn btn-secondary">⟳ Reiniciar respuestas</button>
+                <button id="verResultadosBtn" class="btn btn-primary">📊 Ver mis resultados</button>
+            </div>
+        </div>
+
+        <div id="resultsArea" class="results-container hidden"></div>
+
+        <!-- FOOTER ESTÁNDAR SITUTOR -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ========== MENÚ DE HAMBURGUESA ==========
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // ========== PREGUNTAS VARK (5 por estilo) ==========
+        const questionsData = [
+            { text: "Prefiero ver diagramas, mapas conceptuales o gráficos para entender un tema.", style: "V" },
+            { text: "Recuerdo mejor la información cuando escucho una explicación oral o un podcast.", style: "A" },
+            { text: "Aprendo más rápido si leo el material y tomo apuntes escritos.", style: "R" },
+            { text: "Necesito hacer ejercicios prácticos o construir algo con mis manos para aprender.", style: "K" },
+            { text: "Las imágenes y los videos me ayudan a retener conceptos nuevos.", style: "V" },
+            { text: "Disfruto las clases donde el profesor explica en voz alta y se permite debatir.", style: "A" },
+            { text: "Subrayar y releer mis apuntes es mi técnica de estudio favorita.", style: "R" },
+            { text: "Prefiero los laboratorios, las maquetas o los juegos de rol en lugar de leer teoría.", style: "K" },
+            { text: "Puedo recordar rostros y lugares fácilmente, pero olvido nombres.", style: "V" },
+            { text: "Me gusta grabarme a mí mismo explicando temas para repasar después.", style: "A" },
+            { text: "Escribir listas y hacer resúmenes escritos me ayuda a organizar ideas.", style: "R" },
+            { text: "Me aburro si solo leo o escucho; prefiero moverme o hacer algo mientras aprendo.", style: "K" },
+            { text: "Para estudiar, dibujo flechas, recuadros o uso colores para conectar conceptos.", style: "V" },
+            { text: "Las instrucciones verbales me quedan claras sin necesidad de un manual.", style: "A" },
+            { text: "Disfruto leer libros de texto, artículos y enciclopedias.", style: "R" },
+            { text: "Aprendo mejor cuando realizo experimentos, construyo modelos o salgo de campo.", style: "K" },
+            { text: "Visualizo la página del libro donde vi un dato cuando intento recordarlo.", style: "V" },
+            { text: "Puedo seguir una conferencia sin distraerme, incluso si no hay apoyos visuales.", style: "A" },
+            { text: "Me gusta redactar ensayos, informes o tomar notas detalladas.", style: "R" },
+            { text: "Si tengo que aprender algo nuevo, prefiero probarlo directamente en lugar de leer instrucciones.", style: "K" }
+        ];
+        const totalQuestions = questionsData.length; // 20
+
+        // Mapeo de estilos a nombres y colores
+        const styleNames = { V: "👁️ Visual", A: "🎧 Auditivo", R: "📖 Lectoescritura", K: "✋ Kinestésico" };
+        const styleColors = { V: "#2c7da0", A: "#e6981a", R: "#4a8c3f", K: "#9b59b6" };
+        const styleOrder = ["V", "A", "R", "K"];
+
+        // Variables del test
+        let shuffledQuestions = [];
+        let userAnswers = new Array(totalQuestions).fill(null);
+        let testStarted = false;
+        let datosForm, testSection, resultsDiv, container, missingContainer, answeredSpan;
+        let resetBtn, resultadosBtn;
+
+        // Funciones auxiliares
+        function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+        function initRandomOrder() { shuffledQuestions = shuffleArray([...questionsData]); userAnswers = new Array(totalQuestions).fill(null); }
+        function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+
+        function renderTest() {
+            container.innerHTML = '';
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const q = shuffledQuestions[i];
+                const answer = userAnswers[i];
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                if (answer === null) card.classList.add('missing-highlight');
+                card.setAttribute('data-qidx', i);
+                card.innerHTML = `
+                    <div class="question-num">Pregunta ${i+1}</div>
+                    <div class="question-text">${escapeHtml(q.text)}</div>
+                    <div class="likert">
+                        ${[1,2,3,4,5].map(val => `<label style="${answer === val ? 'background:#d9ecf5; border-color:#2c7da0;' : ''}"><input type="radio" name="q_${i}" value="${val}" ${answer === val ? 'checked' : ''}> ${val === 1 ? '❌ Totalmente en desacuerdo' : val === 2 ? '⚠️ En desacuerdo' : val === 3 ? '🤔 Neutral' : val === 4 ? '✅ De acuerdo' : '🔥 Totalmente de acuerdo'}</label>`).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+            attachRadioEvents();
+            updateProgressAndMissing();
+        }
+
+        function attachRadioEvents() {
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const radios = document.querySelectorAll(`input[name="q_${i}"]`);
+                radios.forEach(radio => {
+                    radio.removeEventListener('change', () => {});
+                    radio.addEventListener('change', (e) => {
+                        userAnswers[i] = parseInt(e.target.value, 10);
+                        const card = document.querySelector(`.question-card[data-qidx='${i}']`);
+                        if (card) card.classList.remove('missing-highlight');
+                        updateProgressAndMissing();
+                    });
+                });
+            }
+        }
+
+        function updateProgressAndMissing() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            answeredSpan.textContent = answered;
+            missingContainer.innerHTML = '';
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const isAnswered = userAnswers[i] !== null;
+                const btn = document.createElement('button');
+                btn.textContent = `${i+1}`;
+                btn.className = `missing-btn ${isAnswered ? 'answered' : 'missing'}`;
+                btn.addEventListener('click', () => { document.querySelector(`.question-card[data-qidx='${i}']`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+                missingContainer.appendChild(btn);
+            }
+        }
+
+        function allQuestionsAnswered() {
+            const missing = userAnswers.filter(a => a === null).length;
+            if (missing > 0) { alert(`❌ Faltan ${missing} preguntas. Responde todas para ver tus resultados.`); return false; }
+            return true;
+        }
+
+        // Cálculo de puntuaciones por estilo (V, A, R, K)
+        function computeScores() {
+            let scores = { V: 0, A: 0, R: 0, K: 0 };
+            let counts = { V: 0, A: 0, R: 0, K: 0 };
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const style = shuffledQuestions[i].style;
+                const ans = userAnswers[i];
+                if (ans !== null) {
+                    scores[style] += ans;
+                    counts[style]++;
+                }
+            }
+            let percentages = {};
+            for (let s of styleOrder) {
+                let max = counts[s] * 5;
+                percentages[s] = max ? Math.round((scores[s] / max) * 100) : 0;
+            }
+            return { scoresRaw: scores, percentages, counts };
+        }
+
+        function getTopStyle(percentages) {
+            let top = styleOrder[0];
+            for (let s of styleOrder) if (percentages[s] > percentages[top]) top = s;
+            return top;
+        }
+
+        function getRecommendations(style) {
+            const recos = {
+                V: "📌 Usa mapas mentales, diagramas, infografías, videos educativos y toma apuntes con colores. Sustituye texto por esquemas visuales.",
+                A: "🎙️ Graba tus clases, participa en debates, lee en voz alta, usa rimas o canciones para memorizar. Explica los temas a alguien más.",
+                R: "📝 Escribe resúmenes, elabora listas, lee libros y artículos, transforma diagramas en texto. Releer y reescribir te ayudará mucho.",
+                K: "🏃‍♂️ Aprende haciendo: experimentos, maquetas, role-playing, salidas de campo. Toma descansos activos y relaciona teoría con movimiento."
+            };
+            return recos[style] || "Combina diferentes estrategias según la situación.";
+        }
+
+        function getDescripcionEstilo(style) {
+            const desc = {
+                V: "Aprendes mejor cuando la información se presenta de forma visual: gráficos, diagramas, mapas y colores. Tu memoria fotográfica es una fortaleza.",
+                A: "El oído es tu principal canal de aprendizaje. Prefieres las explicaciones orales, debates y recursos auditivos. Disfrutas las conferencias y la música.",
+                R: "La palabra escrita es tu aliada. Te encanta leer, tomar apuntes detallados y hacer listas. Los textos bien estructurados te facilitan el aprendizaje.",
+                K: "Necesitas experiencia práctica y movimiento. Aprendes haciendo, tocando, construyendo. Las clases teóricas muy largas te resultan difíciles."
+            };
+            return desc[style] || "";
+        }
+
+        // Guardar en localStorage
+        function guardarResultado(nombre, escuela, percentages, topStyle, recomendacion) {
+            const resultado = {
+                fecha: new Date().toISOString(),
+                nombre, escuela, percentages, topStyle,
+                recomendacion,
+                descripcionEstilo: getDescripcionEstilo(topStyle)
+            };
+            localStorage.setItem('situtorEstilosAprendizaje', JSON.stringify(resultado));
+        }
+
+        // Generar PDF usando ventana emergente + print (método confiable)
+        function generarPDF(nombre, escuela, percentages, topStyle, recomendacion, descripcion) {
+            let barsHtml = '';
+            for (let s of styleOrder) {
+                let percent = percentages[s];
+                let color = styleColors[s];
+                barsHtml += `
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 200px; font-weight: 700; color: #1a4b6e;">${styleNames[s]}</div>
+                        <div style="flex: 1; background: #d9e2ec; border-radius: 30px; height: 28px; overflow: hidden;">
+                            <div style="height: 100%; border-radius: 30px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 0.75rem; font-weight: bold; width: ${percent}%; background: ${color};">${percent}%</div>
+                        </div>
+                        <div style="width: 50px;">${percent} pts</div>
+                    </div>
+                `;
+            }
+            const contenidoPDF = `
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>Test VARK - ${escapeHtml(nombre)}</title>
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 2rem; color: #1e2a3e; }
+                    h1 { color: #1a4b6e; text-align: center; border-bottom: 3px solid #ffb347; padding-bottom: 0.5rem; }
+                    .tutor-info { text-align: center; font-size: 0.8rem; color: #4b6f7e; margin-bottom: 1rem; }
+                    .alumno-info { display: flex; justify-content: space-between; margin: 1.5rem 0; padding: 1rem; background: #e6f4ea; border-radius: 0.8rem; }
+                    .score-bars { margin: 1.5rem 0; }
+                    .area-destacada { background: #f0f7ff; border-radius: 1rem; padding: 1rem; margin-top: 1rem; }
+                    .footer-pdf { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #4b6f7e; border-top: 1px solid #ccc; padding-top: 1rem; }
+                </style>
+                </head>
+                <body>
+                    <h1>🎨 Test de Estilos de Aprendizaje VARK</h1>
+                    <div class="tutor-info">Mtro. José Huidobro Espejel · Tutor Grupal · COBAEM Plantel 03 Chimalhuacán</div>
+                    <div class="alumno-info">
+                        <div><strong>👤 Nombre:</strong> ${escapeHtml(nombre)}</div>
+                        <div><strong>🏫 Escuela:</strong> ${escapeHtml(escuela)}</div>
+                    </div>
+                    <div class="score-bars">${barsHtml}</div>
+                    <div class="area-destacada">
+                        <h2 style="color: #1a4b6e; margin-top: 0;">🎯 Tu estilo predominante: ${styleNames[topStyle]}</h2>
+                        <p><strong>📖 Descripción:</strong> ${descripcion}</p>
+                        <p><strong>✨ Estrategias recomendadas:</strong> ${recomendacion}</p>
+                        <p><strong>💡 Consejo:</strong> Aunque tengas un estilo preferido, entrenar otros canales fortalecerá tu aprendizaje. ¡Combínalos!</p>
+                    </div>
+                    <div class="footer-pdf">
+                        <p>SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA</p>
+                        <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                        <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            const ventana = window.open('', '_blank');
+            if (!ventana) { alert('❌ Permite ventanas emergentes para generar el PDF'); return; }
+            ventana.document.write(contenidoPDF);
+            ventana.document.close();
+            setTimeout(() => { ventana.print(); }, 500);
+        }
+
+        function mostrarResultados() {
+            if (!allQuestionsAnswered()) return;
+            const { percentages } = computeScores();
+            const topStyle = getTopStyle(percentages);
+            const nombre = document.getElementById('nombre').value.trim() || "Aspirante";
+            const escuela = document.getElementById('escuela').value.trim() || "No especificada";
+            const recomendacion = getRecommendations(topStyle);
+            const descEstilo = getDescripcionEstilo(topStyle);
+            
+            // Guardar resultado
+            guardarResultado(nombre, escuela, percentages, topStyle, recomendacion);
+            
+            // Construir barras
+            let barsHtml = '';
+            for (let s of styleOrder) {
+                let percent = percentages[s];
+                let color = styleColors[s];
+                barsHtml += `<div class="score-item"><div class="score-label">${styleNames[s]}</div><div class="bar-bg"><div class="bar-fill" style="width: ${percent}%; background: ${color};">${percent}%</div></div><div class="score-value">${percent} pts</div></div>`;
+            }
+            
+            const resultadosHTML = `
+                <div id="reporteResultado">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <h2 style="color: #1a4b6e; border-bottom: 2px solid #ffb347; padding-bottom: 0.5rem;">📋 Resultado: Estilos de Aprendizaje</h2>
+                        <span class="saved-badge">💾 Guardado automáticamente</span>
+                    </div>
+                    <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p>
+                    <p><strong>Escuela:</strong> ${escapeHtml(escuela)}</p>
+                    <div class="score-bars">${barsHtml}</div>
+                    <div style="background: #f0f7ff; border-radius: 1rem; padding: 1rem;">
+                        <h3 style="color: #1a4b6e;">🎯 Tu estilo predominante: ${styleNames[topStyle]}</h3>
+                        <p><strong>📖 Descripción:</strong> ${descEstilo}</p>
+                        <p><strong>✨ Estrategias recomendadas:</strong> ${recomendacion}</p>
+                        <hr style="margin: 0.8rem 0;">
+                        <p><strong>💡 Consejo:</strong> Aunque tengas un estilo preferido, entrenar otros canales fortalecerá tu aprendizaje. ¡Combínalos!</p>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #4b6f7e;">
+                        <p>SITUTOR · Basado en el modelo VARK de Neil Fleming</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+                        <button id="descargarPDFBtn" class="btn btn-pdf">📄 Descargar resultados en PDF</button>
+                        <button id="borrarRegistroBtn" class="btn btn-danger">🗑️ Borrar registro guardado</button>
+                        <button id="reiniciarCompletoBtn" class="btn btn-secondary">🔄 Realizar nuevo test</button>
+                    </div>
+                </div>
+            `;
+            resultsDiv.innerHTML = resultadosHTML;
+            resultsDiv.classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            
+            // Eventos
+            document.getElementById('descargarPDFBtn')?.addEventListener('click', () => {
+                generarPDF(nombre, escuela, percentages, topStyle, recomendacion, descEstilo);
+            });
+            document.getElementById('borrarRegistroBtn')?.addEventListener('click', () => {
+                if (confirm("¿Borrar el resultado guardado? Esta acción no se puede deshacer.")) {
+                    localStorage.removeItem('situtorEstilosAprendizaje');
+                    alert("Registro borrado. Puedes realizar un nuevo test.");
+                    location.reload();
+                }
+            });
+            document.getElementById('reiniciarCompletoBtn')?.addEventListener('click', () => {
+                resetFullTest();
+                datosForm.classList.remove('hidden');
+                testSection.classList.add('hidden');
+                resultsDiv.classList.add('hidden');
+                document.getElementById('nombre').value = '';
+                document.getElementById('escuela').value = '';
+            });
+        }
+        
+        function resetFullTest() { initRandomOrder(); renderTest(); resultsDiv.classList.add('hidden'); }
+        
+        // Cargar último resultado guardado
+        function cargarUltimoResultado() {
+            const guardado = localStorage.getItem('situtorEstilosAprendizaje');
+            if (!guardado) { alert("No hay ningún resultado guardado. Primero completa el test."); return false; }
+            try {
+                const data = JSON.parse(guardado);
+                const { nombre, escuela, percentages, topStyle, recomendacion, descripcionEstilo, fecha } = data;
+                let barsHtml = '';
+                for (let s of styleOrder) {
+                    let percent = percentages[s] || 0;
+                    let color = styleColors[s];
+                    barsHtml += `<div class="score-item"><div class="score-label">${styleNames[s]}</div><div class="bar-bg"><div class="bar-fill" style="width: ${percent}%; background: ${color};">${percent}%</div></div><div class="score-value">${percent} pts</div></div>`;
+                }
+                const resultadosHTML = `
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;"><h2 style="color:#1a4b6e;">📋 Resultado guardado</h2><span class="saved-badge">📅 ${new Date(fecha).toLocaleDateString()}</span></div>
+                        <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p><p><strong>Escuela:</strong> ${escapeHtml(escuela)}</p>
+                        <div class="score-bars">${barsHtml}</div>
+                        <div style="background:#f0f7ff; border-radius:1rem; padding:1rem;">
+                            <h3>🎯 Estilo predominante: ${styleNames[topStyle]}</h3>
+                            <p><strong>📖 Descripción:</strong> ${descripcionEstilo || getDescripcionEstilo(topStyle)}</p>
+                            <p><strong>✨ Estrategias:</strong> ${recomendacion || getRecommendations(topStyle)}</p>
+                        </div>
+                        <div style="display: flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+                            <button id="borrarRegistroBtnGuardado" class="btn btn-danger">🗑️ Borrar registro</button>
+                            <button id="reiniciarCompletoBtnGuardado" class="btn btn-secondary">🔄 Nuevo test</button>
+                        </div>
+                    </div>
+                `;
+                resultsDiv.innerHTML = resultadosHTML;
+                resultsDiv.classList.remove('hidden');
+                document.getElementById('borrarRegistroBtnGuardado')?.addEventListener('click', () => {
+                    localStorage.removeItem('situtorEstilosAprendizaje');
+                    alert("Registro borrado.");
+                    location.reload();
+                });
+                document.getElementById('reiniciarCompletoBtnGuardado')?.addEventListener('click', () => {
+                    location.reload();
+                });
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                return true;
+            } catch(e) { alert("Error al cargar el resultado."); return false; }
+        }
+        
+        // Eventos principales
+        document.getElementById('iniciarTestBtn').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value.trim();
+            const escuela = document.getElementById('escuela').value.trim();
+            if (!nombre || !escuela) { alert("Por favor ingresa tu nombre completo y escuela de procedencia."); return; }
+            datosForm.classList.add('hidden');
+            testSection.classList.remove('hidden');
+            if (!testStarted) { initRandomOrder(); testStarted = true; }
+            renderTest();
+        });
+        document.getElementById('cargarUltimoResultadoBtn').addEventListener('click', () => { cargarUltimoResultado(); });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            datosForm = document.getElementById('datosForm');
+            testSection = document.getElementById('testSection');
+            resultsDiv = document.getElementById('resultsArea');
+            container = document.getElementById('questionsContainer');
+            missingContainer = document.getElementById('missingButtonsContainer');
+            answeredSpan = document.getElementById('answeredCount');
+            document.getElementById('totalCount').textContent = totalQuestions;
+            resetBtn = document.getElementById('resetTestBtn');
+            resultadosBtn = document.getElementById('verResultadosBtn');
+            if (resetBtn) resetBtn.addEventListener('click', resetFullTest);
+            if (resultadosBtn) resultadosBtn.addEventListener('click', mostrarResultados);
+        });
+    </script>
+</body>
+</html>

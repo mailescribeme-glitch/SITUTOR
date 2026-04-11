@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Test de Personalidad | Dinámica de Estilos</title>
+    
+    <!-- CSS externo común de SITUTOR -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <style>
+        /* Estilos específicos del test de perfiles */
+        .form-datos {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-gray-300);
+        }
+        .form-datos h2 { color: var(--color-primary); margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.3rem; color: var(--color-primary); }
+        .form-group input, .form-group select { width: 100%; padding: 0.7rem; border: 1px solid var(--color-gray-400); border-radius: var(--radius-md); font-size: 1rem; }
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; min-width: 200px; }
+        
+        .progress-panel {
+            background: #f8fafd; padding: 1rem 2rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;
+        }
+        .missing-buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; max-height: 100px; overflow-y: auto; background: #eef3fa; border-radius: 20px; padding: 0.5rem; }
+        .missing-btn { background: #f0f4f9; border: 1px solid #cbdde9; border-radius: 30px; padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .missing-btn.missing { background: #ffe6e5; border-color: #e06c6c; color: #b13e3e; }
+        .missing-btn.answered { background: #dff0e6; border-color: #2c7da0; color: #1c5a78; }
+        .missing-btn:hover { transform: scale(1.05); }
+        
+        .question-card {
+            background: white; border-radius: 1.2rem; border: 1px solid var(--color-gray-300);
+            margin-bottom: 1.2rem; padding: 1rem 1.5rem; transition: box-shadow 0.2s;
+        }
+        .question-card:hover { box-shadow: var(--shadow-md); }
+        .question-card.missing-highlight { border-left: 6px solid var(--color-danger); background: #fff9f9; }
+        .question-num { font-weight: 700; background: #eef3fc; display: inline-block; padding: 0.2rem 0.8rem; border-radius: 40px; font-size: 0.75rem; margin-bottom: 0.6rem; }
+        .question-text { font-size: 1rem; font-weight: 500; margin-bottom: 1rem; color: var(--color-gray-800); }
+        
+        /* Opciones de perfil (A, B, C, D) */
+        .perfil-opciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .perfil-opcion {
+            flex: 1;
+            min-width: 200px;
+            background: #f5f9fe;
+            padding: 0.8rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #d4e0ea;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .perfil-opcion:hover {
+            background: #e8f0fe;
+            transform: translateY(-2px);
+        }
+        .perfil-opcion.selected {
+            background: #d9ecf5;
+            border-color: #2c7da0;
+            border-width: 2px;
+        }
+        .perfil-opcion input {
+            margin-right: 0.5rem;
+            transform: scale(1.1);
+        }
+        .perfil-opcion label {
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .opcion-texto {
+            font-size: 0.8rem;
+            color: var(--color-gray-600);
+            margin-top: 0.3rem;
+            padding-left: 1.5rem;
+        }
+        .ejemplo-icono {
+            display: inline-block;
+            background: #cbd5e1;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            text-align: center;
+            line-height: 18px;
+            margin-left: 6px;
+            cursor: help;
+            color: #1e2a3e;
+        }
+        .tooltip-ejemplo {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2a3e;
+            color: white;
+            padding: 0.5rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            z-index: 100;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .perfil-opcion:hover .tooltip-ejemplo {
+            opacity: 1;
+        }
+        .tooltip-mobile {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2a3e;
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            z-index: 2000;
+            max-width: 280px;
+            text-align: center;
+        }
+        
+        .actions { display: flex; justify-content: center; gap: 1rem; margin: 1rem 0 2rem; flex-wrap: wrap; }
+        .results-container { background: #eef3fa; border-radius: var(--radius-lg); padding: 1.8rem; border-left: 6px solid var(--color-primary-light); margin-top: 2rem; }
+        .score-bars { display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0; }
+        .score-item { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .score-label { width: 200px; font-weight: 700; color: var(--color-primary); }
+        .bar-bg { flex: 1; background: #d9e2ec; border-radius: 30px; height: 28px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 30px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 0.75rem; font-weight: bold; }
+        .saved-badge { background: #e8f0fe; border-radius: var(--radius-full); padding: 0.2rem 0.8rem; font-size: 0.7rem; display: inline-block; margin-left: 1rem; }
+        .hidden { display: none; }
+        
+        @media (max-width: 750px) {
+            .score-label { width: 100%; }
+            .form-row { flex-direction: column; }
+            .progress-panel { flex-direction: column; align-items: stretch; }
+            .perfil-opciones { flex-direction: column; }
+            .perfil-opcion { min-width: auto; }
+            .tooltip-ejemplo { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Test de Personalidad</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="recursos_apoyo.html">📚 Recursos de apoyo</a></li>
+            <li><a href="analisis_tutoria.html">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="school-badge">SITUTOR · Comunicación y Trabajo en Equipo</div>
+            <h1>🐾 Test de Personalidad</h1>
+            <p>14 preguntas · Descubre tu estilo de comunicación y trabajo</p>
+        </div>
+
+        <!-- Formulario de datos -->
+        <div id="datosForm" class="form-datos">
+            <h2>📝 Tus datos</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre completo *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Ana Laura Méndez">
+                </div>
+                <div class="form-group">
+                    <label>Escuela / Grado *</label>
+                    <input type="text" id="escuela" placeholder="Ej: COBAEM, ENP, Bachillerato">
+                </div>
+                <div class="form-group">
+                    <label>Grupo / Semestre (opcional)</label>
+                    <input type="text" id="grupo" placeholder="Ej: 602">
+                </div>
+            </div>
+            <button id="iniciarTestBtn" class="btn btn-primary">✨ Iniciar dinámica</button>
+            <button id="cargarUltimoResultadoBtn" class="btn btn-secondary" style="margin-left: 0.5rem;">📂 Cargar último resultado</button>
+        </div>
+
+        <!-- Sección del test (oculta al inicio) -->
+        <div id="testSection" class="hidden">
+            <div class="progress-panel">
+                <div class="stats">📊 Progreso: <span id="answeredCount">0</span> / <span id="totalCount">14</span> respondidas</div>
+                <div class="missing-buttons" id="missingButtonsContainer"></div>
+            </div>
+            <div id="questionsContainer"></div>
+            <div class="actions">
+                <button id="resetTestBtn" class="btn btn-secondary">⟳ Reiniciar respuestas</button>
+                <button id="verResultadosBtn" class="btn btn-primary">🎭 Descubrir mi perfil</button>
+            </div>
+        </div>
+
+        <div id="resultsArea" class="results-container hidden"></div>
+
+        <!-- FOOTER ESTÁNDAR SITUTOR -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ========== MENÚ DE HAMBURGUESA ==========
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // ========== PREGUNTAS (14 dimensiones) ==========
+        const preguntasData = [
+            { texto: "¿De qué hablo más cuando converso con otros?", 
+              opciones: ["Resultados, lo que quiero lograr", "Sueños y aspiraciones", "Sentimientos y experiencias", "Datos y cantidades"],
+              ejemplos: ["📌 'Hay que terminar esto hoy'", "✨ 'Sueño con ser ingeniero'", "💬 'Me siento emocionado'", "📊 'El 80% aprobó'"] },
+            { texto: "¿Cómo es mi ritmo al hablar?", 
+              opciones: ["Muy rápido", "Rápido", "Más lento", "Moderado"],
+              ejemplos: ["⚡ 'Hablo a mil por hora'", "🚀 'Me expreso con energía'", "🐢 'Me tomo mi tiempo'", "🎯 'Ritmo equilibrado'"] },
+            { texto: "¿Cómo es mi forma de vestir / apariencia personal?", 
+              opciones: ["Elegante, formal, buen gusto", "Colores llamativos, moderno", "Ropa cómoda, casual", "Conservador, tradicional"],
+              ejemplos: ["👔 'Me gusta verme profesional'", "🎨 'Uso colores que resalten'", "👕 'Priorizo la comodidad'", "📚 'Prefiero lo clásico'"] },
+            { texto: "¿Cómo describirías mi estilo de comunicación?", 
+              opciones: ["Directo al punto", "Animado, impulsivo", "Tranquilo, casual", "Específico, conciso"],
+              ejemplos: ["🎯 'Vamos al grano'", "🎭 'Hablo con muchas expresiones'", "😌 'Vamos viendo'", "📝 'Explico con detalles justos'"] },
+            { texto: "¿Qué es lo que más me motiva?", 
+              opciones: ["Los resultados", "El reconocimiento", "La aprobación de otros", "La actividad constante"],
+              ejemplos: ["🏆 'Lograr mis metas'", "👏 'Que me feliciten'", "🤝 'Sentir que me aceptan'", "⚡ 'Siempre hacer algo'"] },
+            { texto: "¿Qué tipo de estímulos me atraen más?", 
+              opciones: ["Retos y cambios", "Diversión y novedad", "Apoyo y compañerismo", "Precisión e información"],
+              ejemplos: ["🔥 'Los desafíos me motivan'", "🎮 'Lo divertido me engancha'", "🤗 'Trabajar en equipo'", "📖 'Tener todo claro'"] },
+            { texto: "¿Cómo suelo expresar mi enojo?", 
+              opciones: ["Me pongo impaciente y agresivo", "Me frustro y puedo explotar", "Me siento confundido y gentil", "Me enojo lento y de forma racional"],
+              ejemplos: ["⏰ '¡Apúrate!'", "💥 'Digo cosas sin pensar'", "😔 'Me retraigo'", "🤔 'Analizo por qué pasó'"] },
+            { texto: "¿Cómo es mi estilo de trabajo o estudio?", 
+              opciones: ["Intenso, hago varias cosas a la vez", "Libre, interactúo con otros", "Cooperativo, ayudo a todos", "Cuidadoso, una cosa a la vez"],
+              ejemplos: ["📚 'Hago múltiples tareas'", "👥 'Me gusta trabajar en grupo'", "🤝 'Ayudo a quien necesita'", "📝 'Me concentro en una tarea'"] },
+            { texto: "¿Cómo es mi espacio de trabajo o estudio?", 
+              opciones: ["Organizado por prioridades", "Con objetos interesantes", "Con recuerdos personales", "Con referencias y papeles"],
+              ejemplos: ["📋 'Listas de pendientes'", "🖼️ 'Pósters y objetos curiosos'", "📸 'Fotos y recuerdos'", "📁 'Apuntes y libros a la mano'"] },
+            { texto: "¿Cuál es mi ritmo de trabajo habitual?", 
+              opciones: ["Rápido, me gusta el cambio", "Rápido, me aburro fácil", "Sin prisa, odio la presión", "Metódico, constante"],
+              ejemplos: ["⚡ 'Paso de una tarea a otra'", "😅 'Me cansa lo repetitivo'", "🐢 'Trabajo a mi ritmo'", "⏲️ 'Sigo una rutina'"] },
+            { texto: "¿Qué es lo que menos me gusta?", 
+              opciones: ["Perder el tiempo", "Hacer lo mismo de siempre", "Los conflictos", "Equivocarme"],
+              ejemplos: ["⏳ 'Las esperas largas'", "🔄 'La rutina aburrida'", "😤 'Las peleas o discusiones'", "❌ 'Cometer errores'"] },
+            { texto: "¿Qué rol suelo tomar en un grupo?", 
+              opciones: ["Líder, tomo el control", "Ser el centro de atención", "Mediador, busco que me incluyan", "El que da información"],
+              ejemplos: ["👑 'Dirijo al equipo'", "🎤 'Me gusta que me miren'", "🤝 'Busco que todos estén bien'", "📚 'Aporto datos importantes'"] },
+            { texto: "¿Por qué me gustaría que me valoraran?", 
+              opciones: ["Por mi productividad", "Por mi contribución", "Por mi involucración", "Por la calidad de mi trabajo"],
+              ejemplos: ["📈 'Lo que logro hacer'", "💡 'Mis ideas y aportes'", "💚 'Cuánto me esfuerzo'", "⭐ 'Lo bien que hago las cosas'"] },
+            { texto: "¿Con qué tipo de recompensa me sentiría más motivado?", 
+              opciones: ["Poder y liderazgo", "Reconocimiento público", "Aprobación y cariño", "Responsabilidad y confianza"],
+              ejemplos: ["🔑 'Tomar decisiones importantes'", "🏅 'Que me feliciten delante de todos'", "❤️ 'Sentirme querido'", "📋 'Que me encarguen tareas importantes'"] }
+        ];
+
+        const totalPreguntas = preguntasData.length;
+        const perfiles = [
+            { nombre: "PANTERA", icono: "🐆", color: "#dc2626", 
+              descripcion: "¡Eres una Pantera! 🌟 Orientado/a a resultados, directo/a y decidido/a. Te gusta el control y la eficiencia. En equipo, aportas liderazgo y determinación.",
+              consejo: "Practica la escucha activa y permite que otros aporten sin sentir que pierdes el control." },
+            { nombre: "PAVO REAL", icono: "🦚", color: "#f39c12", 
+              descripcion: "¡Eres un Pavo Real! 🎭 Creativo/a, entusiasta y sociable. Te gusta ser el centro de atención y motivar a los demás. Aportas energía y optimismo.",
+              consejo: "Equilibra tu entusiasmo con momentos de escucha y atención a los detalles." },
+            { nombre: "DELFÍN", icono: "🐬", color: "#2c7da0", 
+              descripcion: "¡Eres un Delfín! 💙 Empático/a, colaborador/a y buen/a oyente. Valoras la armonía y las relaciones. Aportas calidez y apoyo al equipo.",
+              consejo: "Aprende a decir 'no' cuando sea necesario y a priorizar tus propias metas." },
+            { nombre: "BÚHO", icono: "🦉", color: "#4a8c3f", 
+              descripcion: "¡Eres un Búho! 📚 Metódico/a, preciso/a y analítico/a. Valoras los datos y la calidad. Aportas estructura y rigor al trabajo.",
+              consejo: "Permite espacio para la intuición y la flexibilidad, no todo necesita un dato exacto." }
+        ];
+
+        let shuffledPreguntas = [];
+        let respuestas = new Array(totalPreguntas).fill(null);
+        let testStarted = false;
+        let datosForm, testSection, resultsDiv, container, missingContainer, answeredSpan;
+        let resetBtn, resultadosBtn;
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        
+        function initRandomOrder() {
+            shuffledPreguntas = shuffleArray([...preguntasData]);
+            respuestas = new Array(totalPreguntas).fill(null);
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function renderTest() {
+            container.innerHTML = '';
+            for (let i = 0; i < shuffledPreguntas.length; i++) {
+                const pregunta = shuffledPreguntas[i];
+                const respuestaActual = respuestas[i];
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                if (respuestaActual === null) card.classList.add('missing-highlight');
+                card.setAttribute('data-qidx', i);
+                
+                let opcionesHtml = '';
+                for (let optIdx = 0; optIdx < pregunta.opciones.length; optIdx++) {
+                    const isSelected = (respuestaActual === optIdx);
+                    opcionesHtml += `
+                        <div class="perfil-opcion ${isSelected ? 'selected' : ''}" data-opt="${optIdx}">
+                            <input type="radio" name="q_${i}" id="q_${i}_${optIdx}" value="${optIdx}" ${isSelected ? 'checked' : ''}>
+                            <label for="q_${i}_${optIdx}">${String.fromCharCode(65+optIdx)}. ${pregunta.opciones[optIdx]}</label>
+                            <span class="ejemplo-icono">?</span>
+                            <div class="tooltip-ejemplo">${pregunta.ejemplos[optIdx]}</div>
+                            <div class="opcion-texto"><small>${pregunta.ejemplos[optIdx]}</small></div>
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    <div class="question-num">Pregunta ${i+1}</div>
+                    <div class="question-text">${escapeHtml(pregunta.texto)}</div>
+                    <div class="perfil-opciones">
+                        ${opcionesHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+            attachRadioEvents();
+            updateProgressAndMissing();
+        }
+        
+        function attachRadioEvents() {
+            for (let i = 0; i < shuffledPreguntas.length; i++) {
+                const radios = document.querySelectorAll(`input[name="q_${i}"]`);
+                radios.forEach(radio => {
+                    radio.removeEventListener('change', () => {});
+                    radio.addEventListener('change', (e) => {
+                        const valor = parseInt(e.target.value, 10);
+                        respuestas[i] = valor;
+                        const card = document.querySelector(`.question-card[data-qidx='${i}']`);
+                        if (card) {
+                            card.classList.remove('missing-highlight');
+                            const opciones = card.querySelectorAll('.perfil-opcion');
+                            opciones.forEach((opt, idx) => {
+                                if (idx === valor) opt.classList.add('selected');
+                                else opt.classList.remove('selected');
+                            });
+                        }
+                        updateProgressAndMissing();
+                    });
+                });
+            }
+        }
+        
+        function updateProgressAndMissing() {
+            const answered = respuestas.filter(a => a !== null).length;
+            answeredSpan.textContent = answered;
+            missingContainer.innerHTML = '';
+            for (let i = 0; i < shuffledPreguntas.length; i++) {
+                const isAnswered = respuestas[i] !== null;
+                const btn = document.createElement('button');
+                btn.textContent = `${i+1}`;
+                btn.className = `missing-btn ${isAnswered ? 'answered' : 'missing'}`;
+                btn.addEventListener('click', () => {
+                    document.querySelector(`.question-card[data-qidx='${i}']`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+                missingContainer.appendChild(btn);
+            }
+        }
+        
+        function allQuestionsAnswered() {
+            const missing = respuestas.filter(a => a === null).length;
+            if (missing > 0) {
+                alert(`❌ Faltan ${missing} preguntas. Responde todas para descubrir tu perfil.`);
+                return false;
+            }
+            return true;
+        }
+        
+        function computeScores() {
+            let puntajes = [0, 0, 0, 0];
+            for (let i = 0; i < shuffledPreguntas.length; i++) {
+                const respuesta = respuestas[i];
+                if (respuesta !== null) {
+                    puntajes[respuesta]++;
+                }
+            }
+            return puntajes;
+        }
+        
+        function getTopStyle(puntajes) {
+            let max = 0, top = 0;
+            for (let i = 0; i < puntajes.length; i++) {
+                if (puntajes[i] > max) {
+                    max = puntajes[i];
+                    top = i;
+                }
+            }
+            return top;
+        }
+        
+        function guardarResultado(nombre, escuela, grupo, puntajes, topIndex) {
+            const resultado = {
+                fecha: new Date().toISOString(),
+                nombre: nombre,
+                escuela: escuela,
+                grupo: grupo,
+                puntajes: puntajes,
+                topPerfil: topIndex,
+                totalRespondidas: respuestas.filter(a => a !== null).length
+            };
+            localStorage.setItem('situtorPerfilesComunicacion', JSON.stringify(resultado));
+        }
+        
+        function generarPDF(nombre, escuela, grupo, puntajes, topIndex) {
+            const total = puntajes.reduce((a,b) => a+b, 0);
+            let barsHtml = '';
+            for (let i = 0; i < perfiles.length; i++) {
+                const percent = total > 0 ? Math.round((puntajes[i] / total) * 100) : 0;
+                barsHtml += `
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 200px; font-weight: 700; color: #1a4b6e;">${perfiles[i].icono} ${perfiles[i].nombre}</div>
+                        <div style="flex: 1; background: #d9e2ec; border-radius: 30px; height: 28px; overflow: hidden;">
+                            <div style="height: 100%; border-radius: 30px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 0.75rem; font-weight: bold; width: ${percent}%; background: ${perfiles[i].color};">${percent}%</div>
+                        </div>
+                        <div style="width: 60px;">${puntajes[i]}/${total}</div>
+                    </div>
+                `;
+            }
+            const contenidoPDF = `
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>Perfil de Comunicación - ${escapeHtml(nombre)}</title>
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 2rem; color: #1e2a3e; }
+                    h1 { color: #1a4b6e; text-align: center; border-bottom: 3px solid #ffb347; padding-bottom: 0.5rem; }
+                    .tutor-info { text-align: center; font-size: 0.8rem; color: #4b6f7e; margin-bottom: 1rem; }
+                    .alumno-info { display: flex; justify-content: space-between; margin: 1.5rem 0; padding: 1rem; background: #e6f4ea; border-radius: 0.8rem; flex-wrap: wrap; gap: 0.5rem; }
+                    .score-bars { margin: 1.5rem 0; }
+                    .area-destacada { background: #f0f7ff; border-radius: 1rem; padding: 1rem; margin-top: 1rem; }
+                    .footer-pdf { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #4b6f7e; border-top: 1px solid #ccc; padding-top: 1rem; }
+                </style>
+                </head>
+                <body>
+                    <h1>🐾 Test de Personalidad</h1>
+                    <div class="tutor-info">Mtro. José Huidobro Espejel · Tutor Grupal · COBAEM Plantel 03 Chimalhuacán</div>
+                    <div class="alumno-info">
+                        <div><strong>👤 Nombre:</strong> ${escapeHtml(nombre)}</div>
+                        <div><strong>🏫 Escuela:</strong> ${escapeHtml(escuela)}</div>
+                        ${grupo ? `<div><strong>📚 Grupo:</strong> ${escapeHtml(grupo)}</div>` : ''}
+                    </div>
+                    <div class="score-bars">${barsHtml}</div>
+                    <div class="area-destacada">
+                        <h2 style="color: #1a4b6e; margin-top: 0;">🎯 Tu perfil predominante: ${perfiles[topIndex].icono} ${perfiles[topIndex].nombre}</h2>
+                        <p><strong>📖 Descripción:</strong> ${perfiles[topIndex].descripcion}</p>
+                        <p><strong>✨ Recomendación:</strong> ${perfiles[topIndex].consejo}</p>
+                        <p><strong>💡 Recuerda:</strong> Conocer tu estilo te ayuda a comunicarte mejor, pero también es valioso entender y respetar los estilos de los demás.</p>
+                    </div>
+                    <div class="footer-pdf">
+                        <p>SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA</p>
+                        <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            const ventana = window.open('', '_blank');
+            if (!ventana) { alert('❌ Permite ventanas emergentes para generar el PDF'); return; }
+            ventana.document.write(contenidoPDF);
+            ventana.document.close();
+            setTimeout(() => { ventana.print(); }, 500);
+        }
+        
+        function mostrarResultados() {
+            if (!allQuestionsAnswered()) return;
+            const puntajes = computeScores();
+            const topIndex = getTopStyle(puntajes);
+            const nombre = document.getElementById('nombre').value.trim() || "Aspirante";
+            const escuela = document.getElementById('escuela').value.trim() || "No especificada";
+            const grupo = document.getElementById('grupo').value.trim();
+            const total = puntajes.reduce((a,b) => a+b, 0);
+            
+            guardarResultado(nombre, escuela, grupo, puntajes, topIndex);
+            
+            let barsHtml = '';
+            for (let i = 0; i < perfiles.length; i++) {
+                const percent = total > 0 ? Math.round((puntajes[i] / total) * 100) : 0;
+                barsHtml += `
+                    <div class="score-item">
+                        <div class="score-label">${perfiles[i].icono} ${perfiles[i].nombre}</div>
+                        <div class="bar-bg"><div class="bar-fill" style="width: ${percent}%; background: ${perfiles[i].color};">${percent}%</div></div>
+                        <div class="score-value">${puntajes[i]}/${total}</div>
+                    </div>
+                `;
+            }
+            
+            const resultadosHTML = `
+                <div id="reporteResultado">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <h2 style="color: #1a4b6e; border-bottom: 2px solid #ffb347; padding-bottom: 0.5rem;">🐾 Tu perfil de comunicación</h2>
+                        <span class="saved-badge">💾 Guardado automáticamente</span>
+                    </div>
+                    <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p>
+                    <p><strong>Escuela:</strong> ${escapeHtml(escuela)}</p>
+                    ${grupo ? `<p><strong>Grupo:</strong> ${escapeHtml(grupo)}</p>` : ''}
+                    <div class="score-bars">${barsHtml}</div>
+                    <div style="background: #f0f7ff; border-radius: 1rem; padding: 1rem;">
+                        <h3 style="color: #1a4b6e;">🎯 Tu perfil predominante: ${perfiles[topIndex].icono} ${perfiles[topIndex].nombre}</h3>
+                        <p><strong>📖 Descripción:</strong> ${perfiles[topIndex].descripcion}</p>
+                        <p><strong>✨ Recomendación:</strong> ${perfiles[topIndex].consejo}</p>
+                        <hr style="margin: 0.8rem 0;">
+                        <p><strong>💡 Recuerda:</strong> Conocer tu estilo te ayuda a comunicarte mejor, pero también es valioso entender y respetar los estilos de los demás.</p>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #4b6f7e;">
+                        <p>SITUTOR · Dinámica de Perfiles · Basado en modelo de estilos de comunicación</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+                        <button id="descargarPDFBtn" class="btn btn-pdf">📄 Descargar resultados en PDF</button>
+                        <button id="borrarRegistroBtn" class="btn btn-danger">🗑️ Borrar registro guardado</button>
+                        <button id="reiniciarCompletoBtn" class="btn btn-secondary">🔄 Realizar nuevo test</button>
+                    </div>
+                </div>
+            `;
+            resultsDiv.innerHTML = resultadosHTML;
+            resultsDiv.classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            
+            document.getElementById('descargarPDFBtn')?.addEventListener('click', () => {
+                generarPDF(nombre, escuela, grupo, puntajes, topIndex);
+            });
+            document.getElementById('borrarRegistroBtn')?.addEventListener('click', () => {
+                if (confirm("¿Borrar el resultado guardado? Esta acción no se puede deshacer.")) {
+                    localStorage.removeItem('situtorPerfilesComunicacion');
+                    alert("Registro borrado. Puedes realizar un nuevo test.");
+                    location.reload();
+                }
+            });
+            document.getElementById('reiniciarCompletoBtn')?.addEventListener('click', () => {
+                resetFullTest();
+                datosForm.classList.remove('hidden');
+                testSection.classList.add('hidden');
+                resultsDiv.classList.add('hidden');
+                document.getElementById('nombre').value = '';
+                document.getElementById('escuela').value = '';
+                document.getElementById('grupo').value = '';
+            });
+        }
+        
+        function resetFullTest() {
+            initRandomOrder();
+            renderTest();
+            resultsDiv.classList.add('hidden');
+        }
+        
+        function cargarUltimoResultado() {
+            const guardado = localStorage.getItem('situtorPerfilesComunicacion');
+            if (!guardado) { alert("No hay ningún resultado guardado. Primero completa el test."); return false; }
+            try {
+                const data = JSON.parse(guardado);
+                const { nombre, escuela, grupo, puntajes, topPerfil, fecha } = data;
+                const total = puntajes.reduce((a,b) => a+b, 0);
+                let barsHtml = '';
+                for (let i = 0; i < perfiles.length; i++) {
+                    const percent = total > 0 ? Math.round((puntajes[i] / total) * 100) : 0;
+                    barsHtml += `
+                        <div class="score-item">
+                            <div class="score-label">${perfiles[i].icono} ${perfiles[i].nombre}</div>
+                            <div class="bar-bg"><div class="bar-fill" style="width: ${percent}%; background: ${perfiles[i].color};">${percent}%</div></div>
+                            <div class="score-value">${puntajes[i]}/${total}</div>
+                        </div>
+                    `;
+                }
+                const resultadosHTML = `
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2 style="color:#1a4b6e;">🐾 Resultado guardado</h2>
+                            <span class="saved-badge">📅 ${new Date(fecha).toLocaleDateString()}</span>
+                        </div>
+                        <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p>
+                        <p><strong>Escuela:</strong> ${escapeHtml(escuela)}</p>
+                        ${grupo ? `<p><strong>Grupo:</strong> ${escapeHtml(grupo)}</p>` : ''}
+                        <div class="score-bars">${barsHtml}</div>
+                        <div style="background:#f0f7ff; border-radius:1rem; padding:1rem;">
+                            <h3>🎯 Perfil predominante: ${perfiles[topPerfil].icono} ${perfiles[topPerfil].nombre}</h3>
+                            <p><strong>📖 Descripción:</strong> ${perfiles[topPerfil].descripcion}</p>
+                            <p><strong>✨ Recomendación:</strong> ${perfiles[topPerfil].consejo}</p>
+                        </div>
+                        <div style="display: flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+                            <button id="borrarRegistroBtnGuardado" class="btn btn-danger">🗑️ Borrar registro</button>
+                            <button id="reiniciarCompletoBtnGuardado" class="btn btn-secondary">🔄 Nuevo test</button>
+                        </div>
+                    </div>
+                `;
+                resultsDiv.innerHTML = resultadosHTML;
+                resultsDiv.classList.remove('hidden');
+                document.getElementById('borrarRegistroBtnGuardado')?.addEventListener('click', () => {
+                    localStorage.removeItem('situtorPerfilesComunicacion');
+                    alert("Registro borrado.");
+                    location.reload();
+                });
+                document.getElementById('reiniciarCompletoBtnGuardado')?.addEventListener('click', () => {
+                    location.reload();
+                });
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                return true;
+            } catch(e) { alert("Error al cargar el resultado."); return false; }
+        }
+        
+        function setupMobileTooltips() {
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('ejemplo-icono')) {
+                    e.stopPropagation();
+                    const tooltipText = e.target.nextElementSibling?.textContent || "Ejemplo";
+                    let existing = document.querySelector('.tooltip-mobile');
+                    if (existing) existing.remove();
+                    let div = document.createElement('div');
+                    div.className = 'tooltip-mobile';
+                    div.textContent = tooltipText;
+                    document.body.appendChild(div);
+                    setTimeout(() => div.remove(), 2500);
+                }
+            });
+        }
+        
+        document.getElementById('iniciarTestBtn').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value.trim();
+            const escuela = document.getElementById('escuela').value.trim();
+            if (!nombre || !escuela) { alert("Por favor ingresa tu nombre completo y escuela de procedencia."); return; }
+            datosForm.classList.add('hidden');
+            testSection.classList.remove('hidden');
+            if (!testStarted) { initRandomOrder(); testStarted = true; }
+            renderTest();
+            setupMobileTooltips();
+        });
+        document.getElementById('cargarUltimoResultadoBtn').addEventListener('click', () => { cargarUltimoResultado(); });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            datosForm = document.getElementById('datosForm');
+            testSection = document.getElementById('testSection');
+            resultsDiv = document.getElementById('resultsArea');
+            container = document.getElementById('questionsContainer');
+            missingContainer = document.getElementById('missingButtonsContainer');
+            answeredSpan = document.getElementById('answeredCount');
+            document.getElementById('totalCount').textContent = totalPreguntas;
+            resetBtn = document.getElementById('resetTestBtn');
+            resultadosBtn = document.getElementById('verResultadosBtn');
+            if (resetBtn) resetBtn.addEventListener('click', resetFullTest);
+            if (resultadosBtn) resultadosBtn.addEventListener('click', mostrarResultados);
+        });
+    </script>
+</body>
+</html>

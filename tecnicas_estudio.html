@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Técnicas de Estudio | Infografía Interactiva | COBAEM</title>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <!-- Estilos específicos de técnicas de estudio -->
+    <style>
+        /* Grid de técnicas */
+        .tecnicas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tecnica-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            border: 1px solid #e2edf2;
+        }
+
+        .tecnica-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tecnica-header {
+            background: linear-gradient(135deg, #2c5a2e 0%, #4a8c3f 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tecnica-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tecnica-icono {
+            font-size: 1.5rem;
+        }
+
+        .tecnica-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .tecnica-contenido {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: #f9fbfd;
+        }
+
+        .tecnica-contenido.active {
+            max-height: 600px;
+        }
+
+        .tecnica-inner {
+            padding: 1.5rem;
+        }
+
+        .tecnica-descripcion {
+            margin-bottom: 1rem;
+            color: #2c3e44;
+        }
+
+        .tecnica-pasos {
+            background: #fef9e8;
+            border-left: 3px solid #ffb347;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .tecnica-pasos h4 {
+            color: #b85c00;
+            margin-bottom: 0.5rem;
+        }
+
+        .tecnica-pasos ol, .tecnica-pasos ul {
+            margin-left: 1.2rem;
+        }
+
+        .tecnica-ejemplo {
+            background: #e8f0fe;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .tecnica-ejemplo h4 {
+            color: #1a4b6e;
+            margin-bottom: 0.3rem;
+        }
+
+        .badge-tecnica {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+            color: #2c5a2e;
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Técnicas de Estudio</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="index.html#seccion-analisis">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1>📚 Técnicas de Estudio</h1>
+            <p>SITUTOR · Infografía interactiva · Aprende a aprender · Métodos efectivos</p>
+        </div>
+
+        <!-- Introducción -->
+        <div class="seccion">
+            <h2>🎯 ¿Por qué usar técnicas de estudio?</h2>
+            <p>Estudiar no es solo "leer y repetir". Existen métodos comprobados que te ayudan a <strong>comprender mejor, recordar por más tiempo y reducir la ansiedad</strong>. Cada persona aprende diferente, por eso te presentamos varias técnicas. ¡Encuentra la que mejor funciona para ti!</p>
+        </div>
+
+        <!-- Grid de técnicas -->
+        <div class="tecnicas-grid" id="tecnicasContainer">
+            <!-- Las técnicas se cargarán dinámicamente -->
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="botonera">
+            <button class="btn btn-pdf" id="btnPDF">📄 Descargar guía de técnicas como PDF</button>
+            <a href="index.html" class="btn btn-regresar">🏠 Regresar a SITUTOR</a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // ==================== DATOS DE LAS TÉCNICAS ====================
+        const tecnicas = [
+            {
+                nombre: "🍅 Técnica Pomodoro",
+                descripcion: "Dividir el tiempo de estudio en bloques de 25 minutos llamados 'pomodoros', seguidos de descansos cortos de 5 minutos. Después de 4 pomodoros, tomas un descanso más largo de 15-20 minutos.",
+                pasos: "1. Elige una tarea específica para estudiar.\n2. Configura un temporizador a 25 minutos.\n3. Estudia sin interrupciones (nada de celular).\n4. Cuando suene el timer, descansa 5 minutos.\n5. Repite el ciclo 4 veces y toma un descanso largo.",
+                ejemplo: "Voy a estudiar el tema de ecuaciones cuadráticas. Uso 2 pomodoros (50 minutos) para leer y practicar, luego descanso 10 minutos antes de cambiar de materia.",
+                ideal: "Procrastinadores · Mantener concentración"
+            },
+            {
+                nombre: "🧪 Técnica Feynman",
+                descripcion: "Explicar un concepto con tus propias palabras como si se lo enseñaras a un niño de primaria. Si no puedes simplificarlo, es que no lo has entendido realmente.",
+                pasos: "1. Escribe el tema o concepto en la parte superior de una hoja.\n2. Explica el concepto con tus palabras, como si se lo enseñaras a alguien sin conocimientos previos.\n3. Identifica las partes donde te trabas o usas términos complicados.\n4. Vuelve a estudiar esas partes y simplifica tu explicación.\n5. Repite hasta que puedas explicarlo de forma clara y sencilla.",
+                ejemplo: "La fotosíntesis es como una cocina: las plantas toman agua, luz y aire para cocinar su propio alimento (glucosa).",
+                ideal: "Materias conceptuales · Comprensión profunda"
+            },
+            {
+                nombre: "📒 Método Cornell",
+                descripcion: "Un sistema para tomar apuntes de forma organizada, que facilita el repaso y la memorización. Divide la hoja en 3 secciones: notas, ideas clave y resumen.",
+                pasos: "• Columna izquierda (ancha): Notas principales de la clase o lectura.\n• Columna derecha (estrecha): Palabras clave, preguntas o ideas principales.\n• Parte inferior: Resumen de 1-2 líneas al final.\n\nCómo usarlo:\n1. Toma notas en la columna izquierda durante la clase.\n2. Justo después, escribe palabras clave en la columna derecha.\n3. Tapa la izquierda y trata de recordar usando solo las palabras clave.\n4. Escribe un resumen al final.",
+                ejemplo: "Izquierda: 'La Independencia comenzó en 1810 con el Grito de Dolores'. Derecha: '1810, Grito, Hidalgo'. Resumen: 'La Independencia inició con Hidalgo en 1810'.",
+                ideal: "Tomar apuntes · Repasar eficientemente"
+            },
+            {
+                nombre: "🗺️ Mapas Mentales",
+                descripcion: "Organizar información de forma visual, partiendo de una idea central y conectando conceptos relacionados mediante ramas y palabras clave.",
+                pasos: "1. Coloca el tema principal en el centro de la hoja.\n2. Dibuja ramas hacia subtemas relacionados.\n3. Usa palabras clave cortas, no frases largas.\n4. Agrega colores, imágenes o símbolos para recordar mejor.\n5. Conecta ideas entre diferentes ramas si es necesario.",
+                ejemplo: "Herramientas digitales: Canva, MindMeister, XMind, o simplemente lápiz y papel.",
+                ideal: "Estudiantes visuales · Relacionar conceptos"
+            },
+            {
+                nombre: "✍️ Subrayado Activo",
+                descripcion: "No es solo marcar líneas. Es identificar y resaltar las ideas más importantes de un texto para luego estudiarlas sin tener que releer todo.",
+                pasos: "1. Lee el texto completo una vez sin subrayar.\n2. En la segunda lectura, identifica la idea principal de cada párrafo.\n3. Subraya SOLO palabras o frases clave (no párrafos enteros).\n4. Usa colores diferentes: rojo para ideas principales, azul para ejemplos.\n5. Al final, escribe al margen una palabra que resuma el párrafo.",
+                ejemplo: "No subrayes más del 20-30% del texto. Si subrayas todo, no estás priorizando.",
+                ideal: "Lectura comprensiva · Textos largos"
+            },
+            {
+                nombre: "🃏 Repaso Espaciado + Flashcards",
+                descripcion: "Repasar la información en intervalos de tiempo cada vez más largos (1 día, 3 días, 1 semana, 1 mes). Las flashcards (tarjetas de memoria) son el mejor formato para aplicar esta técnica.",
+                pasos: "1. Crea una tarjeta con una pregunta o concepto del lado frontal.\n2. Del lado posterior escribe la respuesta o explicación.\n3. Repasa las tarjetas que te cuestan con más frecuencia.\n4. Las que ya dominas, repásalas cada vez con más espacio de tiempo.",
+                ejemplo: "Herramientas digitales: Anki, Quizlet, o haz tus propias tarjetas de papel.",
+                ideal: "Memorizar fechas, vocabulario, fórmulas"
+            }
+        ];
+
+        // ==================== FUNCIONES DE RENDERIZADO ====================
+        function renderizarTecnicas() {
+            const container = document.getElementById('tecnicasContainer');
+            if (!container) return;
+            
+            let html = '';
+            
+            tecnicas.forEach((tecnica, idx) => {
+                const pasosHTML = tecnica.pasos.replace(/\n/g, '<br>');
+                html += `
+                    <div class="tecnica-card">
+                        <div class="tecnica-header" onclick="toggleTecnica(${idx})">
+                            <h3><span class="tecnica-icono">${tecnica.nombre.split(' ')[0]}</span> ${tecnica.nombre}</h3>
+                            <span class="tecnica-toggle" id="toggle_${idx}">▼</span>
+                        </div>
+                        <div class="tecnica-contenido" id="contenido_${idx}">
+                            <div class="tecnica-inner">
+                                <div class="tecnica-descripcion">
+                                    <strong>¿En qué consiste?</strong> ${tecnica.descripcion}
+                                </div>
+                                <div class="tecnica-pasos">
+                                    <h4>📌 Pasos:</h4>
+                                    <p>${pasosHTML}</p>
+                                </div>
+                                <div class="tecnica-ejemplo">
+                                    <h4>💡 Ejemplo:</h4>
+                                    <p>${tecnica.ejemplo}</p>
+                                </div>
+                                <span class="badge-tecnica">🎯 Ideal para: ${tecnica.ideal}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function toggleTecnica(idx) {
+            const contenido = document.getElementById(`contenido_${idx}`);
+            const toggle = document.getElementById(`toggle_${idx}`);
+            if (contenido.classList.contains('active')) {
+                contenido.classList.remove('active');
+                if (toggle) toggle.textContent = '▼';
+            } else {
+                contenido.classList.add('active');
+                if (toggle) toggle.textContent = '▲';
+            }
+        }
+
+        // ==================== GENERAR PDF ====================
+        function generarPDF() {
+            const fecha = new Date().toLocaleDateString();
+            let nombreAlumno = prompt("Escribe tu nombre para personalizar el PDF:", "Mi nombre");
+            if (!nombreAlumno) nombreAlumno = "Estudiante";
+            
+            let contenidoHTML = '';
+            for (let tecnica of tecnicas) {
+                contenidoHTML += `
+                    <div style="margin-bottom: 1.5rem; page-break-inside: avoid;">
+                        <h3 style="color: #1a4b6e; background: #eef2f5; padding: 0.5rem; border-radius: 0.5rem;">${tecnica.nombre}</h3>
+                        <p><strong>¿En qué consiste?</strong> ${tecnica.descripcion}</p>
+                        <p><strong>📌 Pasos:</strong><br>${tecnica.pasos.replace(/\n/g, '<br>')}</p>
+                        <p><strong>💡 Ejemplo:</strong> ${tecnica.ejemplo}</p>
+                        <p><strong>🎯 Ideal para:</strong> ${tecnica.ideal}</p>
+                    </div>
+                    <hr>
+                `;
+            }
+            
+            const htmlCompleto = `<!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>SITUTOR - Técnicas de Estudio</title>
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 2rem; }
+                    h1 { color: #1a4b6e; text-align: center; }
+                    .header-pdf { text-align: center; margin-bottom: 2rem; }
+                    .footer-pdf { text-align: center; margin-top: 2rem; font-size: 0.7rem; border-top: 1px solid #ccc; padding-top: 1rem; }
+                </style>
+            </head>
+            <body>
+                <div class="header-pdf">
+                    <h1>📚 SITUTOR - Técnicas de Estudio</h1>
+                    <p><strong>Alumno/a:</strong> ${nombreAlumno}</p>
+                    <p><strong>Fecha:</strong> ${fecha}</p>
+                    <p>COBAEM Plantel 03 Chimalhuacán · Tutor: José Huidobro Espejel</p>
+                </div>
+                ${contenidoHTML}
+                <div class="footer-pdf">
+                    <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                    <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                    <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                    <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                </div>
+            </body>
+            </html>`;
+            
+            const ventana = window.open('', '_blank');
+            if (!ventana) {
+                alert('❌ Permite ventanas emergentes para generar el PDF');
+                return;
+            }
+            ventana.document.write(htmlCompleto);
+            ventana.document.close();
+            setTimeout(() => { ventana.print(); }, 500);
+        }
+
+        // Exponer funciones globales
+        window.toggleTecnica = toggleTecnica;
+        
+        // Inicializar
+        renderizarTecnicas();
+        document.getElementById('btnPDF').addEventListener('click', generarPDF);
+    </script>
+</body>
+</html>

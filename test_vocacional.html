@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Test Vocacional | Orientación Profesional</title>
+    
+    <!-- CSS externo común de SITUTOR -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <style>
+        /* Estilos específicos del test vocacional (complementan a situtor.css) */
+        .form-datos {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-gray-300);
+        }
+        
+        .form-datos h2 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--color-primary);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--color-gray-400);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .progress-panel {
+            background: #f8fafd;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .missing-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            max-height: 100px;
+            overflow-y: auto;
+            background: #eef3fa;
+            border-radius: 20px;
+            padding: 0.5rem;
+        }
+        
+        .missing-btn {
+            background: #f0f4f9;
+            border: 1px solid #cbdde9;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .missing-btn.missing {
+            background: #ffe6e5;
+            border-color: #e06c6c;
+            color: #b13e3e;
+        }
+        
+        .missing-btn.answered {
+            background: #dff0e6;
+            border-color: #2c7da0;
+            color: #1c5a78;
+        }
+        
+        .missing-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 1.2rem;
+            border: 1px solid var(--color-gray-300);
+            margin-bottom: 1.2rem;
+            padding: 1rem 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        
+        .question-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .question-card.missing-highlight {
+            border-left: 6px solid var(--color-danger);
+            background: #fff9f9;
+        }
+        
+        .question-num {
+            font-weight: 700;
+            background: #eef3fc;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            margin-bottom: 0.6rem;
+        }
+        
+        .question-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--color-gray-800);
+        }
+        
+        .likert {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+        
+        .likert label {
+            background: #f5f9fe;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            border: 1px solid #d4e0ea;
+            transition: all 0.2s;
+        }
+        
+        .likert label:hover {
+            background: #e8f0fe;
+            transform: scale(1.02);
+        }
+        
+        .likert input {
+            accent-color: #2c7da0;
+            margin: 0;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .results-container {
+            background: #eef3fa;
+            border-radius: var(--radius-lg);
+            padding: 1.8rem;
+            border-left: 6px solid var(--color-primary-light);
+            margin-top: 2rem;
+        }
+        
+        .score-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .score-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .score-label {
+            width: 230px;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .bar-bg {
+            flex: 1;
+            background: #d9e2ec;
+            border-radius: 30px;
+            height: 28px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .career-list {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .career-list h4 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .career-list ul {
+            margin-left: 1.5rem;
+        }
+        
+        .career-list li {
+            margin-bottom: 0.3rem;
+        }
+        
+        .saved-badge {
+            background: #e8f0fe;
+            border-radius: var(--radius-full);
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-left: 1rem;
+        }
+        
+        @media (max-width: 750px) {
+            .score-label {
+                width: 100%;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+            .progress-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Test Vocacional</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="test_vocacional.html">🎓 Test Vocacional</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">SITUTOR · Orientación Profesional</div>
+            <h1>🎓 Test Vocacional</h1>
+            <p>100 preguntas · Descubre tu área de afinidad · Basado en parámetros UNAM</p>
+        </div>
+
+        <!-- Formulario de datos personales -->
+        <div id="datosForm" class="form-datos">
+            <h2>📝 Tus datos</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre completo *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Ana Laura Méndez">
+                </div>
+                <div class="form-group">
+                    <label>Escuela de procedencia *</label>
+                    <input type="text" id="escuela" placeholder="Ej: ENP 9, CCH Sur, COBAEM">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Carrera de interés (selecciona de la lista)</label>
+                <select id="carreraSelect">
+                    <option value="">-- Selecciona una carrera --</option>
+                    <optgroup label="🌐 Intereses generales / Multidisciplinarias">
+                        <option value="Comunicación">Comunicación</option>
+                        <option value="Relaciones Internacionales">Relaciones Internacionales</option>
+                        <option value="Pedagogía">Pedagogía</option>
+                        <option value="Administración">Administración</option>
+                        <option value="Ciencia de Datos">Ciencia de Datos</option>
+                        <option value="Turismo">Turismo</option>
+                        <option value="Gestión Cultural">Gestión Cultural</option>
+                    </optgroup>
+                    <optgroup label="🧬 Ciencias Biológicas, Químicas y de la Salud">
+                        <option value="Medicina">Medicina</option>
+                        <option value="Psicología">Psicología</option>
+                        <option value="Biología">Biología</option>
+                        <option value="Química Farmacéutico Biológica">Química Farmacéutico Biológica</option>
+                        <option value="Medicina Veterinaria">Medicina Veterinaria</option>
+                        <option value="Enfermería">Enfermería</option>
+                        <option value="Nutriología">Nutriología</option>
+                        <option value="Odontología">Odontología</option>
+                        <option value="Fisioterapia">Fisioterapia</option>
+                    </optgroup>
+                    <optgroup label="⚙️ Ciencias Físico-Matemáticas e Ingenierías">
+                        <option value="Ingeniería en Computación">Ingeniería en Computación</option>
+                        <option value="Actuaría">Actuaría</option>
+                        <option value="Arquitectura">Arquitectura</option>
+                        <option value="Ingeniería Civil">Ingeniería Civil</option>
+                        <option value="Ingeniería Mecánica">Ingeniería Mecánica</option>
+                        <option value="Ingeniería Aeroespacial">Ingeniería Aeroespacial</option>
+                        <option value="Física">Física</option>
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Ingeniería Eléctrica">Ingeniería Eléctrica</option>
+                        <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                    </optgroup>
+                    <optgroup label="🏛️ Ciencias Sociales">
+                        <option value="Derecho">Derecho</option>
+                        <option value="Economía">Economía</option>
+                        <option value="Ciencias de la Comunicación">Ciencias de la Comunicación</option>
+                        <option value="Sociología">Sociología</option>
+                        <option value="Antropología">Antropología</option>
+                        <option value="Ciencia Política">Ciencia Política</option>
+                        <option value="Trabajo Social">Trabajo Social</option>
+                    </optgroup>
+                    <optgroup label="🎨 Humanidades y Artes">
+                        <option value="Historia">Historia</option>
+                        <option value="Filosofía">Filosofía</option>
+                        <option value="Lengua y Literaturas">Lengua y Literaturas</option>
+                        <option value="Artes Visuales">Artes Visuales</option>
+                        <option value="Música">Música</option>
+                        <option value="Teatro">Teatro</option>
+                        <option value="Traducción">Traducción</option>
+                        <option value="Diseño Gráfico">Diseño Gráfico</option>
+                    </optgroup>
+                    <option value="otra">--- Otra (especificar) ---</option>
+                </select>
+                <input type="text" id="carreraOtra" placeholder="Especifica tu carrera" style="margin-top: 0.5rem; display: none;">
+            </div>
+            <button id="iniciarTestBtn" class="btn btn-primary">✨ Iniciar test vocacional</button>
+            <button id="cargarUltimoResultadoBtn" class="btn btn-secondary" style="margin-left: 0.5rem;">📂 Cargar último resultado guardado</button>
+        </div>
+
+        <!-- Sección del test (oculta al inicio) -->
+        <div id="testSection" class="hidden">
+            <div class="progress-panel">
+                <div class="stats">📊 Progreso: <span id="answeredCount">0</span> / <span id="totalCount">100</span> respondidas</div>
+                <div class="missing-buttons" id="missingButtonsContainer"></div>
+            </div>
+            <div id="questionsContainer"></div>
+            <div class="actions">
+                <button id="resetTestBtn" class="btn btn-secondary">⟳ Reiniciar respuestas</button>
+                <button id="verResultadosBtn" class="btn btn-primary">📊 Ver mis resultados</button>
+            </div>
+        </div>
+
+        <div id="resultsArea" class="results-container hidden"></div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // --------------------------------------------------------------
+        // 100 PREGUNTAS (0: General, 1: Bio-Salud, 2: Ingenierías, 3: Sociales, 4: Humanidades)
+        // --------------------------------------------------------------
+        const rawQuestions = [
+            "Disfruto leer libros, novelas o ensayos por placer.",
+            "Me gusta ver documentales sobre naturaleza, ciencia o historia.",
+            "Prefiero las materias prácticas (talleres, laboratorios) sobre las teóricas.",
+            "Me interesa entender cómo funciona la mente humana y por qué actuamos como lo hacemos.",
+            "Disfruto resolver problemas de lógica y acertijos matemáticos.",
+            "Me gusta escribir cuentos, poemas o llevar un diario personal.",
+            "Prefiero trabajar en equipo que de manera individual.",
+            "Me fascina saber cómo se construyen los edificios, puentes y ciudades.",
+            "Me preocupan los problemas sociales como la pobreza, la desigualdad o la contaminación.",
+            "Disfruto experimentar con computadoras, programas o videojuegos.",
+            "Me gusta ver y analizar obras de arte, pintura o escultura.",
+            "Tengo facilidad para aprender idiomas extranjeros.",
+            "Disfruto organizar eventos, liderar equipos o tomar decisiones importantes.",
+            "Me interesa la historia de las civilizaciones y sus culturas.",
+            "Me gusta hacer manualidades, construir maquetas o reparar cosas.",
+            "Paso tiempo investigando temas de salud, enfermedades o tratamientos.",
+            "Disfruto debatir sobre política, economía o temas de actualidad.",
+            "Me siento atraído por la astronomía y el origen del universo.",
+            "Me gusta ayudar a los demás a resolver sus problemas personales.",
+            "Tengo curiosidad por saber cómo se hacen los medicamentos y vacunas.",
+            "Disfruto las clases de biología y las disecciones.",
+            "Me interesa saber cómo funciona el cuerpo humano.",
+            "No me dan asco las heridas, la sangre o las agujas.",
+            "Me gustaría trabajar en un hospital o clínica.",
+            "Me preocupa el medio ambiente y la conservación de especies.",
+            "Disfruto hacer experimentos en el laboratorio de química.",
+            "Me interesa la alimentación saludable y la nutrición.",
+            "Me gustaría ser capaz de diagnosticar enfermedades.",
+            "Disfruto cuidar de animales y entender su comportamiento.",
+            "Me interesa la genética y cómo se heredan los rasgos.",
+            "Tengo paciencia para escuchar los problemas de salud de otros.",
+            "Me gustaría contribuir a encontrar curas para enfermedades.",
+            "Disfruto las clases de química orgánica e inorgánica.",
+            "Me interesa la relación entre el ejercicio físico y la salud.",
+            "Podría trabajar con muestras de sangre, orina o tejidos.",
+            "Me gusta leer sobre avances médicos y nuevos tratamientos.",
+            "Disfruto estar al aire libre estudiando plantas y animales.",
+            "Me interesa la rehabilitación física y la terapia.",
+            "Podría estudiar durante muchos años para ser especialista.",
+            "Me gusta saber cómo afectan las sustancias químicas al cuerpo.",
+            "Disfruto las matemáticas y se me facilitan.",
+            "Me gusta entender cómo funcionan las máquinas y motores.",
+            "Disfruto las clases de física (movimiento, energía, electricidad).",
+            "Me interesa la programación de computadoras y el desarrollo de software.",
+            "Me gusta diseñar planos o dibujar con precisión.",
+            "Disfruto armar y desarmar aparatos electrónicos.",
+            "Se me facilitan los problemas de razonamiento lógico-matemático.",
+            "Me gustaría diseñar puentes, carreteras o edificios.",
+            "Me interesa la robótica y la inteligencia artificial.",
+            "Disfruto los retos que requieren soluciones técnicas.",
+            "Me gusta trabajar con datos y estadísticas.",
+            "Me interesa la industria aeroespacial y los aviones.",
+            "Disfruto las clases de cálculo y álgebra lineal.",
+            "Me gustaría crear aplicaciones o videojuegos.",
+            "Me interesa la producción de energía (solar, eólica, nuclear).",
+            "Tengo buena capacidad para visualizar objetos en 3D.",
+            "Disfruto resolver problemas de ingeniería en equipo.",
+            "Me gusta la idea de inventar o mejorar productos tecnológicos.",
+            "Se me facilita el uso de software de diseño asistido por computadora (CAD).",
+            "Me interesa la automatización de procesos industriales.",
+            "Disfruto las clases de historia y geografía.",
+            "Me interesa la economía y cómo se mueve el dinero.",
+            "Me gusta analizar las leyes y los derechos de las personas.",
+            "Disfruto leer noticias sobre política internacional.",
+            "Me interesa entender los conflictos sociales y sus causas.",
+            "Me gustaría trabajar en relaciones internacionales o diplomacia.",
+            "Disfruto debatir sobre justicia y ética.",
+            "Me interesa la administración de empresas y el liderazgo.",
+            "Me gustaría ser abogado o juez.",
+            "Disfruto analizar encuestas y estudios de opinión pública.",
+            "Me interesa el marketing, la publicidad y las redes sociales.",
+            "Me gusta saber cómo se toman las decisiones en un gobierno.",
+            "Disfruto estudiar diferentes culturas y sus costumbres.",
+            "Me interesa el periodismo y la comunicación de masas.",
+            "Me gustaría trabajar en una embajada o consulado.",
+            "Disfruto los debates y sé argumentar bien.",
+            "Me interesa la psicología social y el comportamiento grupal.",
+            "Me gusta planificar estrategias de negocio.",
+            "Disfruto leer sobre teorías económicas y de desarrollo.",
+            "Me interesaría trabajar en un banco o institución financiera.",
+            "Disfruto dibujar, pintar, esculpir o hacer arte digital.",
+            "Me gusta tocar un instrumento musical o cantar.",
+            "Disfruto ir al teatro, al cine de autor o a galerías de arte.",
+            "Me interesa la filosofía y las grandes preguntas de la humanidad.",
+            "Disfruto escribir ensayos, crítica literaria o reseñas.",
+            "Me gusta analizar películas desde el punto de vista del director.",
+            "Disfruto estudiar la historia del arte y sus movimientos.",
+            "Me interesa la literatura universal y los clásicos.",
+            "Me gustaría ser profesor de literatura, historia o filosofía.",
+            "Disfruto la música clásica, jazz o experimental.",
+            "Tengo facilidad para aprender lenguas extranjeras (inglés, francés, etc.).",
+            "Disfruto traducir textos o interpretar conversaciones.",
+            "Me gustaría trabajar en la producción audiovisual (cine, video).",
+            "Disfruto actuar o declamar poesía.",
+            "Me interesa la antropología y el estudio de las culturas antiguas.",
+            "Disfruto visitar museos y exposiciones.",
+            "Me gustaría restaurar obras de arte o patrimonio histórico.",
+            "Disfruto crear piezas gráficas con Photoshop o Illustrator.",
+            "Me interesa la música y la tecnología (grabación, edición).",
+            "Disfruto leer sobre mitología, religiones comparadas o simbología."
+        ];
+
+        const areaMap = rawQuestions.map((_, idx) => {
+            if (idx < 20) return 0;
+            if (idx < 40) return 1;
+            if (idx < 60) return 2;
+            if (idx < 80) return 3;
+            return 4;
+        });
+        
+        let fullQuestions = rawQuestions.map((text, idx) => ({ id: idx, text, area: areaMap[idx] }));
+
+        // Base de datos de carreras por área (para recomendaciones)
+        const carrerasPorArea = {
+            0: ["Comunicación", "Relaciones Internacionales", "Pedagogía", "Administración", "Ciencia de Datos", "Turismo", "Gestión Cultural"],
+            1: ["Medicina", "Psicología", "Biología", "Química Farmacéutico Biológica", "Medicina Veterinaria", "Enfermería", "Nutriología", "Odontología", "Fisioterapia"],
+            2: ["Ingeniería en Computación", "Actuaría", "Arquitectura", "Ingeniería Civil", "Ingeniería Mecánica", "Ingeniería Aeroespacial", "Física", "Matemáticas", "Ingeniería Eléctrica", "Ingeniería Industrial"],
+            3: ["Derecho", "Economía", "Ciencias de la Comunicación", "Sociología", "Antropología", "Ciencia Política", "Trabajo Social"],
+            4: ["Historia", "Filosofía", "Lengua y Literaturas", "Artes Visuales", "Música", "Teatro", "Traducción", "Diseño Gráfico"]
+        };
+
+        // Variables del test
+        let shuffledQuestions = [];
+        let userAnswers = new Array(100).fill(null);
+        let testStarted = false;
+        let datosForm, testSection, resultsDiv, container, missingContainer, answeredSpan, totalSpan;
+        let resetBtn, resultadosBtn;
+
+        const areaStats = {
+            0: { 
+                nombre: "🌐 Intereses generales y multidisciplinarios", 
+                descripcion: "Tu perfil muestra intereses variados. Eres una persona curiosa que disfruta tanto de las ciencias como de las artes o las humanidades. Las carreras interdisciplinarias como Comunicación, Relaciones Internacionales, Pedagogía, Administración o Ciencia de Datos pueden ser ideales para ti. Tienes capacidad para conectar diferentes áreas del conocimiento.",
+                promedioMax: "8.90 (promedios generales de alta demanda)",
+                aciertosMax: "112 (Médico Cirujano, QFB, etc.)",
+                carrerasEjemplo: "Comunicación, Relaciones Internacionales, Pedagogía, Administración, Ciencia de Datos" 
+            },
+            1: { 
+                nombre: "🧬 Ciencias Biológicas, Químicas y de la Salud", 
+                descripcion: "Te apasiona el estudio de la vida, el cuerpo humano, los animales y el medio ambiente. Disfrutas la investigación en laboratorio, el contacto con pacientes o la conservación ecológica. Las carreras de esta área requieren vocación de servicio, capacidad de análisis y memoria.",
+                promedioMax: "9.00 (Médico Cirujano, Química Farmacéutico Biológica)",
+                aciertosMax: "113 (Química Farmacéutico Biológica en Facultad de Química)",
+                carrerasEjemplo: "Médico Cirujano, Psicología, Biología, QFB, Medicina Veterinaria, Enfermería, Nutriología" 
+            },
+            2: { 
+                nombre: "⚙️ Ciencias Físico-Matemáticas e Ingenierías", 
+                descripcion: "Tienes facilidad para las matemáticas, la física y el razonamiento lógico. Te gusta resolver problemas técnicos, diseñar, construir o programar. Las ingenierías, arquitectura, actuaría y ciencias de la computación te ofrecen un amplio campo laboral.",
+                promedioMax: "9.00 (Actuaría, Ciencias de la Computación, Ingeniería Aeroespacial)",
+                aciertosMax: "117 (Ingeniería Aeroespacial en Facultad de Ingeniería)",
+                carrerasEjemplo: "Ingeniería en Computación, Actuaría, Arquitectura, Ingeniería Civil, Mecánica, Aeroespacial, Física" 
+            },
+            3: { 
+                nombre: "🏛️ Ciencias Sociales", 
+                descripcion: "Te interesa entender cómo funciona la sociedad, la política, la economía y el derecho. Disfrutas debatir, analizar noticias y proponer soluciones a problemas colectivos. Carreras como Derecho, Economía, Administración, Relaciones Internacionales, Comunicación te permitirán incidir en el desarrollo social.",
+                promedioMax: "9.00 (Ciencias de la Comunicación SUAyED, Sociología SUAyED)",
+                aciertosMax: "104 (Relaciones Internacionales en FCPyS)",
+                carrerasEjemplo: "Derecho, Economía, Administración, Relaciones Internacionales, Ciencias de la Comunicación, Sociología" 
+            },
+            4: { 
+                nombre: "🎨 Humanidades y Artes", 
+                descripcion: "Tu sensibilidad se inclina hacia la creación artística, la literatura, la filosofía, la música, el teatro o los idiomas. Valoras la expresión humana, la historia y el pensamiento crítico. Las licenciaturas en Historia, Filosofía, Letras, Artes Visuales, Música, Teatro, Traducción y Pedagogía son ideales.",
+                promedioMax: "9.00 (Lengua y Literaturas Modernas Letras Italianas)",
+                aciertosMax: "100 (Traducción en ENALLT)",
+                carrerasEjemplo: "Historia, Filosofía, Lengua y Literaturas, Artes Visuales, Música, Teatro, Traducción, Pedagogía" 
+            }
+        };
+
+        // Mostrar/ocultar campo "otra" según selección
+        const carreraSelect = document.getElementById('carreraSelect');
+        const carreraOtra = document.getElementById('carreraOtra');
+        carreraSelect.addEventListener('change', () => {
+            if (carreraSelect.value === 'otra') {
+                carreraOtra.style.display = 'block';
+                carreraOtra.required = false;
+            } else {
+                carreraOtra.style.display = 'none';
+                carreraOtra.value = '';
+            }
+        });
+
+        function getCarreraSeleccionada() {
+            if (carreraSelect.value === 'otra') {
+                return carreraOtra.value.trim();
+            } else {
+                return carreraSelect.value;
+            }
+        }
+
+        function shuffleArray(arr) { 
+            for (let i = arr.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [arr[i], arr[j]] = [arr[j], arr[i]]; 
+            } 
+            return arr; 
+        }
+        
+        function initRandomOrder() { 
+            shuffledQuestions = shuffleArray([...fullQuestions]); 
+            userAnswers = new Array(100).fill(null); 
+        }
+        
+        function escapeHtml(str) { 
+            return str.replace(/[&<>]/g, function(m) { 
+                if (m === '&') return '&amp;'; 
+                if (m === '<') return '&lt;'; 
+                if (m === '>') return '&gt;'; 
+                return m; 
+            }); 
+        }
+
+        function renderTest() {
+            container.innerHTML = '';
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const q = shuffledQuestions[i];
+                const answer = userAnswers[i];
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                if (answer === null) card.classList.add('missing-highlight');
+                card.setAttribute('data-qidx', i);
+                card.innerHTML = `
+                    <div class="question-num">Pregunta ${i+1}</div>
+                    <div class="question-text">${escapeHtml(q.text)}</div>
+                    <div class="likert">
+                        ${[1,2,3,4,5].map(val => `<label style="${answer === val ? 'background:#d9ecf5; border-color:#2c7da0;' : ''}"><input type="radio" name="q_${i}" value="${val}" ${answer === val ? 'checked' : ''}> ${val === 1 ? '❌ Totalmente en desacuerdo' : val === 2 ? '⚠️ En desacuerdo' : val === 3 ? '🤔 Neutral' : val === 4 ? '✅ De acuerdo' : '🔥 Totalmente de acuerdo'}</label>`).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+            attachRadioEvents();
+            updateProgressAndMissing();
+        }
+
+        function attachRadioEvents() {
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const radios = document.querySelectorAll(`input[name="q_${i}"]`);
+                radios.forEach(radio => {
+                    radio.removeEventListener('change', () => {});
+                    radio.addEventListener('change', (e) => {
+                        userAnswers[i] = parseInt(e.target.value, 10);
+                        const card = document.querySelector(`.question-card[data-qidx='${i}']`);
+                        if (card) card.classList.remove('missing-highlight');
+                        updateProgressAndMissing();
+                    });
+                });
+            }
+        }
+
+        function updateProgressAndMissing() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            answeredSpan.textContent = answered;
+            missingContainer.innerHTML = '';
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const isAnswered = userAnswers[i] !== null;
+                const btn = document.createElement('button');
+                btn.textContent = `${i+1}`;
+                btn.className = `missing-btn ${isAnswered ? 'answered' : 'missing'}`;
+                btn.addEventListener('click', () => { 
+                    document.querySelector(`.question-card[data-qidx='${i}']`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+                });
+                missingContainer.appendChild(btn);
+            }
+        }
+
+        function allQuestionsAnswered() {
+            const missing = userAnswers.filter(a => a === null).length;
+            if (missing > 0) { 
+                alert(`❌ Faltan ${missing} preguntas. Responde todas para ver tus resultados.`); 
+                return false; 
+            }
+            return true;
+        }
+
+        function computeScores() {
+            const sums = [0,0,0,0,0], counts = [0,0,0,0,0];
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const area = shuffledQuestions[i].area;
+                const ans = userAnswers[i];
+                if (ans !== null) { 
+                    sums[area] += ans; 
+                    counts[area]++; 
+                }
+            }
+            return sums.map((sum, idx) => counts[idx] ? Math.round((sum / (counts[idx]*5)) * 100) : 0);
+        }
+        
+        function getTopArea(scores) { 
+            let max = -1, idx = 0; 
+            for (let i=0;i<scores.length;i++) if (scores[i]>max) { max=scores[i]; idx=i; } 
+            return idx; 
+        }
+
+        // Función para recomendar carreras específicas basadas en el área y en palabras clave
+        function recomendarCarreras(areaTop, carreraInteres, puntajeArea) {
+            let recomendadas = [];
+            const listaGeneral = carrerasPorArea[areaTop] || [];
+            
+            // Si el usuario escribió una carrera de interés, buscar coincidencias exactas o parciales
+            if (carreraInteres && carreraInteres.trim() !== "") {
+                const interesLower = carreraInteres.toLowerCase();
+                // Buscar carreras que contengan palabras clave o sean similares
+                const coincidencias = listaGeneral.filter(carr => 
+                    interesLower.includes(carr.toLowerCase()) || 
+                    carr.toLowerCase().includes(interesLower) ||
+                    carr.toLowerCase().split(' ').some(palabra => interesLower.includes(palabra))
+                );
+                if (coincidencias.length > 0) {
+                    recomendadas = coincidencias;
+                }
+            }
+            
+            // Si no hay coincidencias o no escribió carrera, tomar primeras 3-5 de la lista general
+            if (recomendadas.length === 0) {
+                const cantidad = puntajeArea >= 70 ? 5 : (puntajeArea >= 50 ? 4 : 3);
+                recomendadas = listaGeneral.slice(0, cantidad);
+            }
+            
+            return recomendadas;
+        }
+
+        function generarAnalisisPersonalizado(carrera, areaTop, topNombre) {
+            if (!carrera || carrera.trim() === "") return "No indicaste una carrera de interés. El resultado anterior te ayudará a explorar opciones afines.";
+            
+            // Determinar el área de la carrera seleccionada usando la base de datos
+            let areaCarrera = -1;
+            for (let a = 0; a <= 4; a++) {
+                if (carrerasPorArea[a].some(c => c.toLowerCase() === carrera.toLowerCase())) {
+                    areaCarrera = a;
+                    break;
+                }
+            }
+            
+            if (areaCarrera === -1) {
+                return `La carrera "${carrera}" no está en nuestra base de datos. Tu área de mayor afinidad es ${topNombre}. Te sugerimos investigar si hay relación.`;
+            }
+            
+            if (areaCarrera === areaTop) {
+                return `✨ ¡Excelente! La carrera que te interesa ("${carrera}") se alinea perfectamente con tu área de mayor afinidad (${topNombre}). Esto indica que tus intereses coinciden con lo que demanda esa profesión. ¡Excelente señal!`;
+            } else {
+                return `⚠️ La carrera "${carrera}" pertenece típicamente al área ${areaStats[areaCarrera].nombre}. Sin embargo, tu test muestra mayor afinidad por ${topNombre}. Reflexiona si hay otras carreras afines a tu inclinación natural o si puedes combinar intereses.`;
+            }
+        }
+
+        // Función para guardar el resultado en localStorage
+        function guardarResultado(nombre, escuela, carreraInteres, scores, topIdx, stats, analisis, recomendaciones) {
+            const resultado = {
+                fecha: new Date().toISOString(),
+                nombre, escuela, carreraInteres,
+                scores, topIdx,
+                topNombre: stats.nombre,
+                descripcion: stats.descripcion,
+                promedioMax: stats.promedioMax,
+                aciertosMax: stats.aciertosMax,
+                carrerasEjemplo: stats.carrerasEjemplo,
+                analisis,
+                recomendaciones
+            };
+            localStorage.setItem('situtorTestVocacional', JSON.stringify(resultado));
+        }
+
+        // Función para cargar el último resultado guardado
+        function cargarUltimoResultado() {
+            const guardado = localStorage.getItem('situtorTestVocacional');
+            if (!guardado) {
+                alert("No hay ningún resultado guardado. Primero completa el test.");
+                return false;
+            }
+            try {
+                const data = JSON.parse(guardado);
+                mostrarResultadosDesdeGuardado(data);
+                return true;
+            } catch(e) {
+                alert("Error al cargar el resultado guardado.");
+                return false;
+            }
+        }
+
+        function mostrarResultadosDesdeGuardado(data) {
+            const scores = data.scores;
+            const topIdx = data.topIdx;
+            const stats = areaStats[topIdx];
+            const nombre = data.nombre;
+            const escuela = data.escuela;
+            const carreraInteres = data.carreraInteres;
+            const analisis = data.analisis;
+            const recomendaciones = data.recomendaciones;
+            
+            const areaNames = ["🌐 General", "🧬 Bio-Salud", "⚙️ Ingenierías", "🏛️ Sociales", "🎨 Humanidades"];
+            const colors = ["#5d8aa8", "#2e8b57", "#2c7da0", "#b9770e", "#9b59b6"];
+            let barsHtml = '';
+            for (let i=0;i<scores.length;i++) {
+                barsHtml += `<div class="score-item"><div class="score-label">${areaNames[i]}</div><div class="bar-bg"><div class="bar-fill" style="width: ${scores[i]}%; background: ${colors[i]};">${scores[i]}%</div></div><div class="score-value">${scores[i]} pts</div></div>`;
+            }
+            
+            const carrerasHtml = `<div class="career-list"><h4>🎯 Carreras recomendadas para ti:</h4><ul>${recomendaciones.map(c => `<li><strong>${c}</strong></li>`).join('')}</ul></div>`;
+            
+            const reportHTML = `
+                <div id="reporteResultado" style="font-family: 'Segoe UI', sans-serif; padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="color: #1a4b6e; border-bottom: 2px solid #ffb347; padding-bottom: 0.5rem;">📋 Resultado del Test Vocacional SITUTOR</h2>
+                        <span class="saved-badge">💾 Guardado el ${new Date(data.fecha).toLocaleDateString()}</span>
+                    </div>
+                    <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p>
+                    <p><strong>Escuela de procedencia:</strong> ${escapeHtml(escuela)}</p>
+                    <p><strong>Carrera de interés:</strong> ${carreraInteres ? escapeHtml(carreraInteres) : "No especificada"}</p>
+                    <div class="score-bars" style="margin: 1.5rem 0;">${barsHtml}</div>
+                    <div style="background: #f0f7ff; border-radius: 1rem; padding: 1rem;">
+                        <h3 style="color: #1a4b6e;">🎯 Tu área de mayor afinidad: ${stats.nombre}</h3>
+                        <p><strong>📖 Descripción detallada:</strong> ${stats.descripcion}</p>
+                        <p><strong>🏆 Promedio de Pase Reglamentado más alto en esta área:</strong> ${stats.promedioMax}</p>
+                        <p><strong>📝 Puntaje de examen (aciertos) más alto requerido:</strong> ${stats.aciertosMax}</p>
+                        <p><strong>📚 Ejemplos de carreras:</strong> ${stats.carrerasEjemplo}</p>
+                        <hr style="margin: 1rem 0;">
+                        <p><strong>🔍 Análisis personalizado:</strong> ${analisis}</p>
+                        ${carrerasHtml}
+                        <p style="font-size: 0.75rem; color: #4b6f7e; margin-top: 1rem;">ℹ️ Datos referenciales (ciclo 2024-2026). El test es una guía para reflexionar sobre tu vocación.</p>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #4b6f7e;">
+                        <p>SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA</p>
+                        <p>© 2026 José Huidobro Espejel</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                        <button id="borrarRegistroBtn" class="btn btn-danger">🗑️ Borrar registro guardado</button>
+                        <button id="reiniciarCompletoBtn2" class="btn btn-secondary">🔄 Realizar nuevo test</button>
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = reportHTML;
+            resultsDiv.classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            
+            document.getElementById('borrarRegistroBtn')?.addEventListener('click', () => {
+                if (confirm("¿Borrar el resultado guardado? Esta acción no se puede deshacer.")) {
+                    localStorage.removeItem('situtorTestVocacional');
+                    alert("Registro borrado. Puedes realizar un nuevo test.");
+                    location.reload();
+                }
+            });
+            document.getElementById('reiniciarCompletoBtn2')?.addEventListener('click', () => {
+                resetFullTest();
+                datosForm.classList.remove('hidden');
+                testSection.classList.add('hidden');
+                resultsDiv.classList.add('hidden');
+                document.getElementById('nombre').value = '';
+                document.getElementById('escuela').value = '';
+                carreraSelect.value = '';
+                carreraOtra.value = '';
+                carreraOtra.style.display = 'none';
+            });
+        }
+
+        // Función para generar PDF usando ventana emergente y print() (método confiable)
+        function generarPDF(nombre, escuela, carreraInteres, scores, topIdx, stats, analisis, recomendaciones, areaNames, colors) {
+            let barsHtml = '';
+            for (let i=0;i<scores.length;i++) {
+                barsHtml += `
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 230px; font-weight: 700; color: #1a4b6e;">${areaNames[i]}</div>
+                        <div style="flex: 1; background: #d9e2ec; border-radius: 30px; height: 28px; overflow: hidden;">
+                            <div style="height: 100%; border-radius: 30px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 0.75rem; font-weight: bold; width: ${scores[i]}%; background: ${colors[i]};">${scores[i]}%</div>
+                        </div>
+                        <div style="width: 50px;">${scores[i]} pts</div>
+                    </div>
+                `;
+            }
+            
+            const carrerasHtml = `<div style="margin-top: 1rem;"><strong>🎯 Carreras recomendadas:</strong><ul>${recomendaciones.map(c => `<li>${c}</li>`).join('')}</ul></div>`;
+            
+            const contenidoPDF = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Test Vocacional SITUTOR - ${escapeHtml(nombre)}</title>
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', Arial, sans-serif;
+                            margin: 2rem;
+                            color: #1e2a3e;
+                            line-height: 1.5;
+                        }
+                        h1 {
+                            color: #1a4b6e;
+                            text-align: center;
+                            border-bottom: 3px solid #ffb347;
+                            padding-bottom: 0.5rem;
+                        }
+                        .tutor-info {
+                            text-align: center;
+                            font-size: 0.8rem;
+                            color: #4b6f7e;
+                            margin-bottom: 1rem;
+                        }
+                        .alumno-info {
+                            display: flex;
+                            justify-content: space-between;
+                            margin: 1.5rem 0;
+                            padding: 1rem;
+                            background: #e6f4ea;
+                            border-radius: 0.8rem;
+                        }
+                        .score-bars {
+                            margin: 1.5rem 0;
+                        }
+                        .area-destacada {
+                            background: #f0f7ff;
+                            border-radius: 1rem;
+                            padding: 1rem;
+                            margin-top: 1rem;
+                        }
+                        .footer-pdf {
+                            text-align: center;
+                            margin-top: 2rem;
+                            font-size: 0.7rem;
+                            color: #4b6f7e;
+                            border-top: 1px solid #cbd5e1;
+                            padding-top: 1rem;
+                        }
+                        hr {
+                            margin: 1rem 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>🎓 SITUTOR - Test Vocacional</h1>
+                    <div class="tutor-info">
+                        Mtro. José Huidobro Espejel · Tutor Grupal · COBAEM Plantel 03 Chimalhuacán
+                    </div>
+                    <div class="alumno-info">
+                        <div><strong>👤 Nombre:</strong> ${escapeHtml(nombre)}</div>
+                        <div><strong>🏫 Escuela:</strong> ${escapeHtml(escuela)}</div>
+                        <div><strong>🎯 Carrera de interés:</strong> ${carreraInteres ? escapeHtml(carreraInteres) : "No especificada"}</div>
+                    </div>
+                    
+                    <div class="score-bars">
+                        ${barsHtml}
+                    </div>
+                    
+                    <div class="area-destacada">
+                        <h2 style="color: #1a4b6e; margin-top: 0;">🎯 Tu área de mayor afinidad: ${stats.nombre}</h2>
+                        <p><strong>📖 Descripción detallada:</strong> ${stats.descripcion}</p>
+                        <p><strong>🏆 Promedio de Pase Reglamentado más alto en esta área:</strong> ${stats.promedioMax}</p>
+                        <p><strong>📝 Puntaje de examen (aciertos) más alto requerido:</strong> ${stats.aciertosMax}</p>
+                        <p><strong>📚 Ejemplos de carreras:</strong> ${stats.carrerasEjemplo}</p>
+                        ${carrerasHtml}
+                        <hr>
+                        <p><strong>🔍 Análisis personalizado:</strong> ${analisis}</p>
+                        <p style="font-size: 0.75rem; color: #4b6f7e;">ℹ️ Datos referenciales (ciclo 2024-2026). El test es una guía para reflexionar sobre tu vocación.</p>
+                    </div>
+                    
+                    <div class="footer-pdf">
+                        <p>SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA</p>
+                        <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                        <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const ventana = window.open('', '_blank');
+            if (!ventana) {
+                alert('❌ Permite ventanas emergentes para generar el PDF');
+                return;
+            }
+            ventana.document.write(contenidoPDF);
+            ventana.document.close();
+            setTimeout(() => {
+                ventana.print();
+            }, 500);
+        }
+
+        function mostrarResultados() {
+            if (!allQuestionsAnswered()) return;
+            const scores = computeScores();
+            const topIdx = getTopArea(scores);
+            const stats = areaStats[topIdx];
+            const nombre = document.getElementById('nombre').value.trim() || "Aspirante";
+            const escuela = document.getElementById('escuela').value.trim() || "No especificada";
+            const carreraInteres = getCarreraSeleccionada();
+            const analisis = generarAnalisisPersonalizado(carreraInteres, topIdx, stats.nombre);
+            const recomendaciones = recomendarCarreras(topIdx, carreraInteres, scores[topIdx]);
+            const areaNames = ["🌐 General", "🧬 Bio-Salud", "⚙️ Ingenierías", "🏛️ Sociales", "🎨 Humanidades"];
+            const colors = ["#5d8aa8", "#2e8b57", "#2c7da0", "#b9770e", "#9b59b6"];
+            
+            // Guardar resultado en localStorage
+            guardarResultado(nombre, escuela, carreraInteres, scores, topIdx, stats, analisis, recomendaciones);
+            
+            let barsHtml = '';
+            for (let i=0;i<scores.length;i++) {
+                barsHtml += `<div class="score-item"><div class="score-label">${areaNames[i]}</div><div class="bar-bg"><div class="bar-fill" style="width: ${scores[i]}%; background: ${colors[i]};">${scores[i]}%</div></div><div class="score-value">${scores[i]} pts</div></div>`;
+            }
+            
+            const carrerasHtml = `<div class="career-list"><h4>🎯 Carreras recomendadas para ti:</h4><ul>${recomendaciones.map(c => `<li><strong>${c}</strong></li>`).join('')}</ul></div>`;
+            
+            const reportHTML = `
+                <div id="reporteResultado" style="font-family: 'Segoe UI', sans-serif; padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="color: #1a4b6e; border-bottom: 2px solid #ffb347; padding-bottom: 0.5rem;">📋 Resultado del Test Vocacional SITUTOR</h2>
+                        <span class="saved-badge">💾 Guardado automáticamente</span>
+                    </div>
+                    <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p>
+                    <p><strong>Escuela de procedencia:</strong> ${escapeHtml(escuela)}</p>
+                    <p><strong>Carrera de interés:</strong> ${carreraInteres ? escapeHtml(carreraInteres) : "No especificada"}</p>
+                    <div class="score-bars" style="margin: 1.5rem 0;">${barsHtml}</div>
+                    <div style="background: #f0f7ff; border-radius: 1rem; padding: 1rem;">
+                        <h3 style="color: #1a4b6e;">🎯 Tu área de mayor afinidad: ${stats.nombre}</h3>
+                        <p><strong>📖 Descripción detallada:</strong> ${stats.descripcion}</p>
+                        <p><strong>🏆 Promedio de Pase Reglamentado más alto en esta área:</strong> ${stats.promedioMax}</p>
+                        <p><strong>📝 Puntaje de examen (aciertos) más alto requerido:</strong> ${stats.aciertosMax}</p>
+                        <p><strong>📚 Ejemplos de carreras:</strong> ${stats.carrerasEjemplo}</p>
+                        <hr style="margin: 1rem 0;">
+                        <p><strong>🔍 Análisis personalizado:</strong> ${analisis}</p>
+                        ${carrerasHtml}
+                        <p style="font-size: 0.75rem; color: #4b6f7e; margin-top: 1rem;">ℹ️ Datos referenciales (ciclo 2024-2026). El test es una guía para reflexionar sobre tu vocación.</p>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #4b6f7e;">
+                        <p>SITUTOR · Sistema de Comunicación Tutorial · Basado en el SiNaTA</p>
+                        <p>© 2026 José Huidobro Espejel</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                        <button id="descargarPDFBtn" class="btn btn-pdf">📄 Descargar resultados en PDF</button>
+                        <button id="borrarRegistroBtn" class="btn btn-danger">🗑️ Borrar registro guardado</button>
+                        <button id="reiniciarCompletoBtn" class="btn btn-secondary">🔄 Realizar nuevo test</button>
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = reportHTML;
+            resultsDiv.classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+            document.getElementById('descargarPDFBtn')?.addEventListener('click', () => {
+                generarPDF(nombre, escuela, carreraInteres, scores, topIdx, stats, analisis, recomendaciones, areaNames, colors);
+            });
+            
+            document.getElementById('borrarRegistroBtn')?.addEventListener('click', () => {
+                if (confirm("¿Borrar el resultado guardado? Esta acción no se puede deshacer.")) {
+                    localStorage.removeItem('situtorTestVocacional');
+                    alert("Registro borrado. Puedes realizar un nuevo test.");
+                    location.reload();
+                }
+            });
+            
+            document.getElementById('reiniciarCompletoBtn')?.addEventListener('click', () => {
+                resetFullTest();
+                datosForm.classList.remove('hidden');
+                testSection.classList.add('hidden');
+                resultsDiv.classList.add('hidden');
+                document.getElementById('nombre').value = '';
+                document.getElementById('escuela').value = '';
+                carreraSelect.value = '';
+                carreraOtra.value = '';
+                carreraOtra.style.display = 'none';
+            });
+        }
+
+        function resetFullTest() { 
+            initRandomOrder(); 
+            renderTest(); 
+            resultsDiv.classList.add('hidden'); 
+        }
+
+        // Inicialización y eventos
+        document.getElementById('iniciarTestBtn').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value.trim();
+            const escuela = document.getElementById('escuela').value.trim();
+            if (!nombre || !escuela) { 
+                alert("Por favor ingresa tu nombre completo y escuela de procedencia."); 
+                return; 
+            }
+            datosForm.classList.add('hidden');
+            testSection.classList.remove('hidden');
+            if (!testStarted) { 
+                initRandomOrder(); 
+                testStarted = true; 
+            }
+            renderTest();
+        });
+        
+        document.getElementById('cargarUltimoResultadoBtn').addEventListener('click', () => {
+            cargarUltimoResultado();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            datosForm = document.getElementById('datosForm');
+            testSection = document.getElementById('testSection');
+            resultsDiv = document.getElementById('resultsArea');
+            container = document.getElementById('questionsContainer');
+            missingContainer = document.getElementById('missingButtonsContainer');
+            answeredSpan = document.getElementById('answeredCount');
+            totalSpan = document.getElementById('totalCount');
+            resetBtn = document.getElementById('resetTestBtn');
+            resultadosBtn = document.getElementById('verResultadosBtn');
+            if (resetBtn) resetBtn.addEventListener('click', resetFullTest);
+            if (resultadosBtn) resultadosBtn.addEventListener('click', mostrarResultados);
+        });
+    </script>
+</body>
+</html>

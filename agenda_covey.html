@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Agenda Covey | Los 7 Hábitos | COBAEM</title>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <!-- Estilos específicos de la agenda -->
+    <style>
+        /* Matriz de tiempo - 4 cuadrantes */
+        .matriz-tiempo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .cuadrante {
+            padding: 1rem;
+            border-radius: 1rem;
+            min-height: 220px;
+        }
+
+        .cuadrante h4 {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .cuadrante ul {
+            list-style: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .cuadrante li {
+            font-size: 0.8rem;
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cuadrante input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .cuadrante input[type="text"] {
+            width: 100%;
+            padding: 0.3rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .cuadrante-i { background: #ffe8e8; border-left: 4px solid #dc2626; }
+        .cuadrante-ii { background: #e8f4e8; border-left: 4px solid #4a8c3f; }
+        .cuadrante-iii { background: #fff0e0; border-left: 4px solid #ffb347; }
+        .cuadrante-iv { background: #e8e8f0; border-left: 4px solid #94a3b8; }
+
+        /* Misión */
+        .mision-section {
+            background: linear-gradient(135deg, #2c5a2e 0%, #4a8c3f 100%);
+            color: white;
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mision-section textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: none;
+            font-family: inherit;
+            margin-top: 1rem;
+            background: #fffff0;
+            resize: vertical;
+        }
+
+        /* Roles */
+        .roles-section {
+            background: #fef9e8;
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .rol-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .rol-item input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+
+        /* Plan semanal */
+        .plan-semanal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .plan-dia {
+            text-align: center;
+        }
+
+        .plan-dia strong {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .plan-dia textarea {
+            width: 100%;
+            height: 80px;
+            padding: 0.3rem;
+            font-size: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            resize: vertical;
+        }
+
+        /* Gratitud */
+        .gratitud-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .gratitud-item input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+
+        /* Botón agregar */
+        .btn-agregar {
+            background: #4a8c3f;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-top: 0.3rem;
+        }
+
+        @media (max-width: 750px) {
+            .plan-semanal-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .matriz-tiempo {
+                grid-template-columns: 1fr;
+            }
+            .rol-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Agenda Covey</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="index.html#seccion-analisis">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1>📋 Agenda Covey</h1>
+            <p>SITUTOR · Los 7 Hábitos de los Adolescentes Altamente Efectivos</p>
+        </div>
+
+        <!-- MISIÓN PERSONAL -->
+        <div class="mision-section">
+            <h2 style="color:white; border-bottom-color:#ffb347;">🎯 Mi Declaración de Misión Personal</h2>
+            <p style="color:white;">Define quién quieres ser, qué quieres lograr y los principios que guiarán tu vida.</p>
+            <textarea id="misionTexto" rows="5" placeholder="Ejemplo: Ser un estudiante responsable, respetuoso y perseverante. Quiero graduarme con orgullo, ayudar a mi familia y ser una persona de bien. Mis principios: honestidad, respeto, disciplina y gratitud."></textarea>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-primary" onclick="guardarMision()">📌 Guardar mi misión</button>
+                <button class="btn btn-pdf" onclick="generarPDF('mision')">📄 Descargar como PDF</button>
+            </div>
+        </div>
+
+        <!-- MATRIZ DE TIEMPO (4 CUADRANTES) -->
+        <div class="seccion">
+            <h2>⏳ Matriz de Administración del Tiempo</h2>
+            <p>Clasifica tus actividades según su <strong>urgencia</strong> e <strong>importancia</strong>. Enfócate en el Cuadrante II (verde).</p>
+            
+            <div class="matriz-tiempo">
+                <div class="cuadrante cuadrante-i">
+                    <h4>🔥 CUADRANTE I: Urgente e Importante</h4>
+                    <p style="font-size:0.7rem;">Crisis, problemas, plazos</p>
+                    <ul id="c1-lista">
+                        <li><input type="checkbox"> Estudiar para examen de mañana</li>
+                        <li><input type="checkbox"> Entregar trabajo atrasado</li>
+                    </ul>
+                    <input type="text" id="c1-nueva" placeholder="+ Agregar tarea">
+                    <button class="btn-agregar" onclick="agregarTarea('c1-lista','c1-nueva')">Agregar</button>
+                </div>
+                <div class="cuadrante cuadrante-ii">
+                    <h4>⭐ CUADRANTE II: No urgente e Importante</h4>
+                    <p style="font-size:0.7rem;">Planificación, prevención, aprendizaje</p>
+                    <ul id="c2-lista">
+                        <li><input type="checkbox"> Planificar mi semana</li>
+                        <li><input type="checkbox"> Leer un libro</li>
+                        <li><input type="checkbox"> Hacer ejercicio</li>
+                    </ul>
+                    <input type="text" id="c2-nueva" placeholder="+ Agregar tarea">
+                    <button class="btn-agregar" onclick="agregarTarea('c2-lista','c2-nueva')">Agregar</button>
+                </div>
+                <div class="cuadrante cuadrante-iii">
+                    <h4>📬 CUADRANTE III: Urgente y No importante</h4>
+                    <p style="font-size:0.7rem;">Interrupciones, distracciones</p>
+                    <ul id="c3-lista">
+                        <li><input type="checkbox"> Revisar redes sociales</li>
+                        <li><input type="checkbox"> Mensajes sin sentido</li>
+                    </ul>
+                    <input type="text" id="c3-nueva" placeholder="+ Agregar tarea">
+                    <button class="btn-agregar" onclick="agregarTarea('c3-lista','c3-nueva')">Agregar</button>
+                </div>
+                <div class="cuadrante cuadrante-iv">
+                    <h4>🎮 CUADRANTE IV: No urgente y No importante</h4>
+                    <p style="font-size:0.7rem;">Pérdida de tiempo</p>
+                    <ul id="c4-lista">
+                        <li><input type="checkbox"> Ver series sin propósito</li>
+                        <li><input type="checkbox"> Navegar sin objetivo</li>
+                    </ul>
+                    <input type="text" id="c4-nueva" placeholder="+ Agregar tarea">
+                    <button class="btn-agregar" onclick="agregarTarea('c4-lista','c4-nueva')">Agregar</button>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-pdf" onclick="generarPDF('matriz')">📄 Descargar Matriz como PDF</button>
+            </div>
+        </div>
+
+        <!-- ROLES Y METAS -->
+        <div class="roles-section">
+            <h2>👥 Mis Roles y Metas Semanales</h2>
+            <p>Identifica tus roles y establece metas para cada uno.</p>
+            <div id="roles-container">
+                <div class="rol-item"><input type="text" id="rol1" placeholder="Rol (ej. Estudiante)"><input type="text" id="meta1" placeholder="Meta esta semana"></div>
+                <div class="rol-item"><input type="text" id="rol2" placeholder="Rol (ej. Hijo/a)"><input type="text" id="meta2" placeholder="Meta esta semana"></div>
+                <div class="rol-item"><input type="text" id="rol3" placeholder="Rol (ej. Amigo/a)"><input type="text" id="meta3" placeholder="Meta esta semana"></div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="guardarRoles()">📌 Guardar roles y metas</button>
+                <button class="btn btn-pdf" onclick="generarPDF('roles')">📄 Descargar como PDF</button>
+            </div>
+        </div>
+
+        <!-- DIARIO DE GRATITUD -->
+        <div class="seccion">
+            <h2>💖 Mi Diario de Gratitud (Hábito 7: Afilar la sierra)</h2>
+            <p>Cada día, escribe 3 cosas por las que estás agradecido. Cultiva una actitud positiva.</p>
+            <div class="gratitud-item"><strong>1.</strong> <input type="text" id="gratitud1" placeholder="..."></div>
+            <div class="gratitud-item"><strong>2.</strong> <input type="text" id="gratitud2" placeholder="..."></div>
+            <div class="gratitud-item"><strong>3.</strong> <input type="text" id="gratitud3" placeholder="..."></div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-primary" onclick="guardarGratitud()">📌 Guardar gratitud de hoy</button>
+                <button class="btn btn-pdf" onclick="generarPDF('gratitud')">📄 Descargar como PDF</button>
+            </div>
+        </div>
+
+        <!-- PLANIFICADOR SEMANAL -->
+        <div class="seccion">
+            <h2>📅 Mi Planificador Semanal</h2>
+            <p>Organiza tus "rocas grandes" (lo importante) antes de llenar tu semana con cosas pequeñas.</p>
+            <div style="margin-bottom: 1rem;">
+                <label><strong>🎯 Mis 3 metas más importantes esta semana:</strong></label>
+                <input type="text" id="metaSemana1" style="width:100%; margin:0.3rem 0; padding:0.5rem;" placeholder="Meta 1...">
+                <input type="text" id="metaSemana2" style="width:100%; margin:0.3rem 0; padding:0.5rem;" placeholder="Meta 2...">
+                <input type="text" id="metaSemana3" style="width:100%; margin:0.3rem 0; padding:0.5rem;" placeholder="Meta 3...">
+            </div>
+            <div class="plan-semanal-grid">
+                <div class="plan-dia"><strong>Lunes</strong><textarea id="lun" rows="3"></textarea></div>
+                <div class="plan-dia"><strong>Martes</strong><textarea id="mar" rows="3"></textarea></div>
+                <div class="plan-dia"><strong>Miércoles</strong><textarea id="mie" rows="3"></textarea></div>
+                <div class="plan-dia"><strong>Jueves</strong><textarea id="jue" rows="3"></textarea></div>
+                <div class="plan-dia"><strong>Viernes</strong><textarea id="vie" rows="3"></textarea></div>
+                <div class="plan-dia"><strong>Sábado</strong><textarea id="sab" rows="3"></textarea></div>
+                <div class="plan-dia"><strong>Domingo</strong><textarea id="dom" rows="3"></textarea></div>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-primary" onclick="guardarPlanSemanal()">📌 Guardar plan semanal</button>
+                <button class="btn btn-pdf" onclick="generarPDF('semanal')">📄 Descargar como PDF</button>
+                <button class="btn btn-pdf" onclick="generarPDFCompleto()">📄 Descargar AGENDA COMPLETA (PDF)</button>
+            </div>
+        </div>
+
+        <!-- BOTONES DE NAVEGACIÓN -->
+        <div class="botonera">
+            <a href="index.html" class="btn btn-regresar">🏠 Regresar a SITUTOR</a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // ==================== AGREGAR TAREAS A MATRIZ ====================
+        function agregarTarea(listaId, inputId) {
+            const input = document.getElementById(inputId);
+            const texto = input.value.trim();
+            if (texto === "") return;
+            const lista = document.getElementById(listaId);
+            const nuevoItem = document.createElement('li');
+            nuevoItem.innerHTML = `<input type="checkbox"> ${texto}`;
+            lista.appendChild(nuevoItem);
+            input.value = "";
+            guardarMatriz();
+        }
+
+        function guardarMatriz() {
+            const data = {
+                c1: document.getElementById('c1-lista').innerHTML,
+                c2: document.getElementById('c2-lista').innerHTML,
+                c3: document.getElementById('c3-lista').innerHTML,
+                c4: document.getElementById('c4-lista').innerHTML
+            };
+            localStorage.setItem('situtorMatrizCovey', JSON.stringify(data));
+        }
+
+        function cargarMatriz() {
+            const guardado = localStorage.getItem('situtorMatrizCovey');
+            if (guardado) {
+                const data = JSON.parse(guardado);
+                document.getElementById('c1-lista').innerHTML = data.c1;
+                document.getElementById('c2-lista').innerHTML = data.c2;
+                document.getElementById('c3-lista').innerHTML = data.c3;
+                document.getElementById('c4-lista').innerHTML = data.c4;
+            }
+        }
+
+        // ==================== MISIÓN ====================
+        function guardarMision() {
+            localStorage.setItem('situtorMisionPersonal', document.getElementById('misionTexto').value);
+            alert('✅ Misión guardada en SITUTOR');
+        }
+        function cargarMision() {
+            const m = localStorage.getItem('situtorMisionPersonal');
+            if (m) document.getElementById('misionTexto').value = m;
+        }
+
+        // ==================== ROLES ====================
+        function guardarRoles() {
+            for(let i=1;i<=3;i++) {
+                localStorage.setItem(`situtorRol${i}`, document.getElementById(`rol${i}`).value);
+                localStorage.setItem(`situtorMeta${i}`, document.getElementById(`meta${i}`).value);
+            }
+            alert('✅ Roles y metas guardados en SITUTOR');
+        }
+        function cargarRoles() {
+            for(let i=1;i<=3;i++) {
+                const r = localStorage.getItem(`situtorRol${i}`);
+                const m = localStorage.getItem(`situtorMeta${i}`);
+                if(r) document.getElementById(`rol${i}`).value = r;
+                if(m) document.getElementById(`meta${i}`).value = m;
+            }
+        }
+
+        // ==================== GRATITUD ====================
+        function guardarGratitud() {
+            for(let i=1;i<=3;i++) {
+                localStorage.setItem(`situtorGratitud${i}`, document.getElementById(`gratitud${i}`).value);
+            }
+            alert('✅ Gratitud guardada en SITUTOR');
+        }
+        function cargarGratitud() {
+            for(let i=1;i<=3;i++) {
+                const g = localStorage.getItem(`situtorGratitud${i}`);
+                if(g) document.getElementById(`gratitud${i}`).value = g;
+            }
+        }
+
+        // ==================== PLAN SEMANAL ====================
+        function guardarPlanSemanal() {
+            for(let i=1;i<=3;i++) localStorage.setItem(`situtorMetaSemana${i}`, document.getElementById(`metaSemana${i}`).value);
+            const dias = ['lun','mar','mie','jue','vie','sab','dom'];
+            dias.forEach(d => localStorage.setItem(`situtorPlan_${d}`, document.getElementById(d).value));
+            alert('✅ Plan semanal guardado en SITUTOR');
+        }
+        function cargarPlanSemanal() {
+            for(let i=1;i<=3;i++) {
+                const m = localStorage.getItem(`situtorMetaSemana${i}`);
+                if(m) document.getElementById(`metaSemana${i}`).value = m;
+            }
+            const dias = ['lun','mar','mie','jue','vie','sab','dom'];
+            dias.forEach(d => {
+                const p = localStorage.getItem(`situtorPlan_${d}`);
+                if(p) document.getElementById(d).value = p;
+            });
+        }
+
+        // ==================== GENERAR PDF POR SECCIÓN ====================
+        function generarPDF(seccion) {
+            let contenido = '';
+            const fecha = new Date().toLocaleDateString();
+            let nombreAlumno = prompt("Escribe tu nombre para personalizar el PDF:", "Mi nombre");
+            if (!nombreAlumno) nombreAlumno = "Estudiante";
+
+            if (seccion === 'matriz') {
+                contenido = document.querySelector('.matriz-tiempo').cloneNode(true);
+                contenido = `<h2>⏳ Matriz de Tiempo</h2>${contenido.outerHTML}<p>💡 Enfócate en el Cuadrante II (verde): planificación, prevención y aprendizaje.</p>`;
+            } else if (seccion === 'mision') {
+                const mision = document.getElementById('misionTexto').value || 'No has escrito tu misión aún.';
+                contenido = `<h2>🎯 Mi Declaración de Misión Personal</h2><div style="background:#f0f7f0; padding:1rem; border-radius:1rem;"><p>${mision.replace(/\n/g, '<br>')}</p></div>`;
+            } else if (seccion === 'roles') {
+                let rolesHtml = '<h2>👥 Mis Roles y Metas</h2><table border="1" cellpadding="8" style="border-collapse:collapse; width:100%;"><tr><th>Rol</th><th>Meta esta semana</th></tr>';
+                for(let i=1;i<=3;i++) {
+                    const rol = document.getElementById(`rol${i}`).value || '_________________';
+                    const meta = document.getElementById(`meta${i}`).value || '_________________';
+                    rolesHtml += `<tr><td>${rol}</td><td>${meta}</td></tr>`;
+                }
+                rolesHtml += '</table>';
+                contenido = rolesHtml;
+            } else if (seccion === 'gratitud') {
+                const g1 = document.getElementById('gratitud1').value || '_________________';
+                const g2 = document.getElementById('gratitud2').value || '_________________';
+                const g3 = document.getElementById('gratitud3').value || '_________________';
+                contenido = `<h2>💖 Mi Diario de Gratitud</h2><ul><li>${g1}</li><li>${g2}</li><li>${g3}</li></ul>`;
+            } else if (seccion === 'semanal') {
+                const meta1 = document.getElementById('metaSemana1').value || '';
+                const meta2 = document.getElementById('metaSemana2').value || '';
+                const meta3 = document.getElementById('metaSemana3').value || '';
+                let planHtml = `<h2>📅 Mi Planificador Semanal</h2><h3>🎯 Metas de la semana:</h3><ul><li>${meta1}</li><li>${meta2}</li><li>${meta3}</li></ul><h3>📅 Plan día a día:</h3><table border="1" cellpadding="5" style="border-collapse:collapse; width:100%;">`;
+                const dias = ['lun','mar','mie','jue','vie','sab','dom'];
+                const nombres = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+                for(let i=0;i<dias.length;i++) {
+                    const texto = document.getElementById(dias[i]).value || '_________________';
+                    planHtml += `<tr><td style="width:100px;"><strong>${nombres[i]}</strong></td><td>${texto.replace(/\n/g, '<br>')}</td></tr>`;
+                }
+                planHtml += '</table>';
+                contenido = planHtml;
+            }
+
+            const htmlCompleto = `<!DOCTYPE html>
+            <html><head><meta charset="UTF-8"><title>SITUTOR - ${nombreAlumno}</title>
+            <style>
+                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 2rem; }
+                h1, h2 { color: #1a4b6e; }
+                .header-pdf { text-align: center; margin-bottom: 2rem; }
+                .footer-pdf { text-align: center; margin-top: 2rem; font-size: 0.7rem; border-top: 1px solid #ccc; padding-top: 1rem; }
+                .cuadrante { padding: 0.5rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+                .cuadrante-i { background: #ffe8e8; }
+                .cuadrante-ii { background: #e8f4e8; }
+                .cuadrante-iii { background: #fff0e0; }
+                .cuadrante-iv { background: #e8e8f0; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid #cbd5e1; padding: 0.5rem; }
+            </style>
+            </head>
+            <body>
+            <div class="header-pdf"><h1>📋 SITUTOR - Agenda Covey</h1><p><strong>Alumno/a:</strong> ${nombreAlumno}</p><p><strong>Fecha:</strong> ${fecha}</p><p>COBAEM Plantel 03 Chimalhuacán · Tutor: José Huidobro Espejel</p></div>
+            ${contenido}
+            <div class="footer-pdf">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+            </div>
+            </body></html>`;
+
+            const ventana = window.open('', '_blank');
+            if (!ventana) { alert('❌ Permite ventanas emergentes'); return; }
+            ventana.document.write(htmlCompleto);
+            ventana.document.close();
+            setTimeout(() => { ventana.print(); }, 500);
+        }
+
+        function generarPDFCompleto() {
+            const fecha = new Date().toLocaleDateString();
+            let nombreAlumno = prompt("Escribe tu nombre para personalizar el PDF:", "Mi nombre");
+            if (!nombreAlumno) nombreAlumno = "Estudiante";
+            
+            const matrizHTML = document.querySelector('.matriz-tiempo').cloneNode(true).outerHTML;
+            const mision = document.getElementById('misionTexto').value || 'No definida';
+            let rolesHtml = '<table border="1" cellpadding="8" style="border-collapse:collapse; width:100%;"><tr><th>Rol</th><th>Meta</th><tr>';
+            for(let i=1;i<=3;i++) {
+                rolesHtml += `<tr><td>${document.getElementById(`rol${i}`).value || '___'}</td><td>${document.getElementById(`meta${i}`).value || '___'}</td></tr>`;
+            }
+            rolesHtml += '</table>';
+            const g1 = document.getElementById('gratitud1').value || '___';
+            const g2 = document.getElementById('gratitud2').value || '___';
+            const g3 = document.getElementById('gratitud3').value || '___';
+            const meta1 = document.getElementById('metaSemana1').value || '';
+            const meta2 = document.getElementById('metaSemana2').value || '';
+            const meta3 = document.getElementById('metaSemana3').value || '';
+            
+            let planHtml = `<h3>Metas:</h3><ul><li>${meta1}</li><li>${meta2}</li><li>${meta3}</li></ul><h3>Plan diario:</h3><ul>`;
+            const dias = ['lun','mar','mie','jue','vie','sab','dom'];
+            const nombres = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+            for(let i=0;i<dias.length;i++) {
+                planHtml += `<li><strong>${nombres[i]}:</strong> ${document.getElementById(dias[i]).value || '___'}</li>`;
+            }
+            planHtml += '</ul>';
+            
+            const htmlCompleto = `<!DOCTYPE html>
+            <html><head><meta charset="UTF-8"><title>SITUTOR Agenda Completa</title>
+            <style>body{font-family:'Segoe UI',Arial;margin:2rem;} h1{color:#1a4b6e;text-align:center;}</style>
+            </head><body>
+            <h1>📋 SITUTOR - Agenda Covey</h1>
+            <p><strong>Alumno:</strong> ${nombreAlumno}</p><p><strong>Fecha:</strong> ${fecha}</p>
+            <h2>🎯 Mi Misión</h2><p>${mision.replace(/\n/g, '<br>')}</p>
+            <h2>⏳ Matriz de Tiempo</h2>${matrizHTML}
+            <h2>👥 Roles y Metas</h2>${rolesHtml}
+            <h2>💖 Diario de Gratitud</h2><ul><li>${g1}</li><li>${g2}</li><li>${g3}</li></ul>
+            <h2>📅 Planificador Semanal</h2>${planHtml}
+            <div class="footer-pdf" style="text-align:center; margin-top:2rem;">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+            </div>
+            </body></html>`;
+            
+            const ventana = window.open('', '_blank');
+            if (!ventana) { alert('❌ Permite ventanas emergentes'); return; }
+            ventana.document.write(htmlCompleto);
+            ventana.document.close();
+            setTimeout(() => { ventana.print(); }, 500);
+        }
+
+        // ==================== AUTO GUARDADO Y CARGA INICIAL ====================
+        function setupAutoSave() {
+            const cuadrantes = ['c1-lista', 'c2-lista', 'c3-lista', 'c4-lista'];
+            cuadrantes.forEach(c => {
+                const observer = new MutationObserver(() => guardarMatriz());
+                observer.observe(document.getElementById(c), { childList: true, subtree: true });
+            });
+        }
+
+        cargarMatriz();
+        cargarMision();
+        cargarRoles();
+        cargarGratitud();
+        cargarPlanSemanal();
+        setupAutoSave();
+    </script>
+</body>
+</html>

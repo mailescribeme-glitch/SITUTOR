@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Banco Comunitario de Rúbricas | COBAEM</title>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <!-- Estilos específicos de la página comunitaria -->
+    <style>
+        .seccion-informativa {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e2edf2;
+        }
+        .seccion-informativa h2 {
+            color: #1a4b6e;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #ffb347;
+            padding-bottom: 0.5rem;
+        }
+        .beneficios-lista {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        .beneficios-lista li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+        }
+        .beneficios-lista li::before {
+            content: "✅";
+            color: #4a8c3f;
+            font-weight: bold;
+        }
+        .btn-compartir {
+            background: #b85c00;
+        }
+        .btn-compartir:hover {
+            background: #8c4500;
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Banco de Rúbricas</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="index.html#seccion-analisis">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1>🤝 Banco Comunitario de Rúbricas</h1>
+            <p>SITUTOR · Construyamos juntos una biblioteca de criterios de evaluación</p>
+        </div>
+
+        <!-- SECCIÓN 1: ¿POR QUÉ COMPARTIR RÚBRICAS? -->
+        <div class="seccion-informativa">
+            <h2>🤝 ¿Por qué es importante este banco?</h2>
+            <p>Las rúbricas son guías que <strong>aclaran las expectativas de evaluación</strong> tanto para docentes como para estudiantes. Contar con un banco comunitario de rúbricas nos permite:</p>
+            <ul class="beneficios-lista">
+                <li><strong>Reducir la ansiedad</strong> de los alumnos al saber exactamente qué se espera de ellos.</li>
+                <li><strong>Homologar criterios</strong> de evaluación entre diferentes grupos y asignaturas.</li>
+                <li><strong>Ahorrar tiempo</strong> a los docentes al tener ejemplos prácticos y adaptables.</li>
+                <li><strong>Fomentar la colaboración</strong> y el aprendizaje entre pares (docentes y alumnos).</li>
+                <li><strong>Mejorar la calidad</strong> de los trabajos al proporcionar una guía clara desde el inicio.</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 2: ¿CÓMO FUNCIONA? -->
+        <div class="seccion-informativa">
+            <h2>🚀 ¿Cómo funciona este banco?</h2>
+            <p><strong>Compartir es la clave.</strong> Tanto docentes como alumnos pueden contribuir subiendo sus rúbricas en formato PDF o imagen. El proceso es muy sencillo:</p>
+            <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li>Haz clic en el botón <strong>"📤 COMPARTIR RÚBRICA"</strong>.</li>
+                <li>Completa un breve formulario con los datos de la rúbrica (materia, título, descripción).</li>
+                <li>Adjunta tu archivo (PDF o imagen).</li>
+                <li>¡Listo! Tu contribución será revisada y publicada para beneficio de toda la comunidad.</li>
+            </ol>
+            <div style="text-align: center;">
+                <a href="https://forms.gle/YgVUkfZWa3yRX4Pf9" class="btn btn-compartir" target="_blank" rel="noopener noreferrer">
+                    📤 COMPARTIR RÚBRICA COMUNITARIA →
+                </a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: TIPOS DE RÚBRICAS QUE PUEDES COMPARTIR -->
+        <div class="seccion-informativa">
+            <h2>📚 ¿Qué tipo de rúbricas puedo compartir?</h2>
+            <p>Cualquier rúbrica que hayas diseñado o utilizado y que consideres útil para otros. Por ejemplo:</p>
+            <ul class="beneficios-lista">
+                <li>Rúbricas para evaluar <strong>exposiciones orales</strong> o debates.</li>
+                <li>Rúbricas para <strong>proyectos escritos</strong> (ensayos, informes, monografías).</li>
+                <li>Rúbricas para <strong>trabajos prácticos</strong> (laboratorio, diseño, programación).</li>
+                <li>Rúbricas para evaluar <strong>trabajo colaborativo</strong> o en equipo.</li>
+                <li>Rúbricas para <strong>portafolios de evidencias</strong>.</li>
+            </ul>
+            <p style="font-size:0.9rem; background:#eef2f5; padding:0.8rem; border-radius:1rem;">📌 Los formatos aceptados son <strong>PDF</strong> e <strong>imagen (JPG, PNG)</strong>. El tamaño máximo por archivo es de 10 MB.</p>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="botonera">
+            <a href="https://forms.gle/YgVUkfZWa3yRX4Pf9" class="btn btn-compartir" target="_blank" rel="noopener noreferrer">
+                📤 COMPARTIR RÚBRICA COMUNITARIA
+            </a>
+            <a href="index.html" class="btn btn-regresar">
+                🏠 Regresar a SITUTOR
+            </a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+    </script>
+</body>
+</html>

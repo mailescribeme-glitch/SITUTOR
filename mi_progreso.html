@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Mi Progreso | Panel Personal | COBAEM</title>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        /* Estilos específicos de la página de progreso */
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid var(--color-gray-300);
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-number { font-size: 2rem; font-weight: 700; color: var(--color-primary); }
+        .stat-label { font-size: 0.7rem; color: var(--color-gray-600); }
+        
+        .insignia-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--color-gray-100);
+            padding: 0.8rem;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+        }
+        .insignia-item:hover { background: #e8f4e8; transform: translateX(5px); }
+        .insignia-icono { font-size: 2rem; }
+        
+        .recomendacion-card {
+            background: #fef9e8;
+            border-left: 4px solid var(--color-secondary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+        .recomendacion-card:hover { transform: translateX(5px); }
+        
+        .chart-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-left: 3px solid var(--color-success);
+            margin-bottom: 1rem;
+            background: var(--color-gray-100);
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+        }
+        .timeline-item:hover { transform: translateX(5px); background: #e8f4e8; }
+        .timeline-fecha { font-size: 0.7rem; color: var(--color-gray-500); min-width: 80px; }
+        .timeline-contenido { flex: 1; }
+        .timeline-contenido strong { color: var(--color-primary); }
+        
+        @media (max-width: 750px) {
+            .timeline-item { flex-direction: column; gap: 0.3rem; }
+            .timeline-fecha { min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Mi Progreso</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="mi_progreso.html">📈 Mi Progreso</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">SITUTOR · Tu progreso personal</div>
+            <h1>📈 Mi Progreso</h1>
+            <p>Visualiza tu evolución académica, tus logros y recomendaciones personalizadas</p>
+        </div>
+
+        <!-- Selector de alumno (demo) -->
+        <div class="card mb-4">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="avatar-placeholder">👤</div>
+                    <div>
+                        <h3 class="text-xl text-primary font-bold" id="nombreAlumno">Ana Danae Montiel Santiago</h3>
+                        <p class="text-muted text-sm">Grupo 602 · Última actividad: hoy</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <select id="selectorAlumno" class="p-2 rounded border">
+                        <option value="ana">Ana Danae Montiel Santiago</option>
+                        <option value="oscar">Oscar Omar Guevara Torres</option>
+                        <option value="azul">Azul Valentina Ramírez Morán</option>
+                        <option value="cristian">Cristian Yamil Flores Ramírez</option>
+                        <option value="jesus">Jesús Gael Mondragón Lemus</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="grid grid-cols-1 grid-cols-2-mobile gap-4 mb-5">
+            <div class="stat-card">
+                <div class="stat-number" id="puntajeTotal">0</div>
+                <div class="stat-label">🏆 Puntos totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="promedioGeneral">0</div>
+                <div class="stat-label">📊 Promedio general</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="tareasCompletadas">0</div>
+                <div class="stat-label">✅ Tareas completadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="diasConsecutivos">0</div>
+                <div class="stat-label">🔥 Días consecutivos</div>
+            </div>
+        </div>
+
+        <!-- Gráficos de evolución -->
+        <div class="grid grid-cols-1 grid-cols-2-mobile gap-4 mb-5">
+            <div class="chart-container">
+                <h3 class="text-md font-semibold text-primary mb-3">📈 Evolución de calificaciones</h3>
+                <canvas id="calificacionesChart" height="200"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="text-md font-semibold text-primary mb-3">💭 Estado de ánimo (últimas semanas)</h3>
+                <canvas id="animoChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Insignias y logros -->
+        <div class="card mb-5">
+            <h2>🏅 Mis insignias y logros</h2>
+            <div class="grid grid-cols-2 grid-cols-4-mobile gap-3" id="insigniasContainer">
+                <!-- Las insignias se cargarán dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Recomendaciones personalizadas -->
+        <div class="card mb-5">
+            <h2>💡 Recomendaciones para ti</h2>
+            <div id="recomendacionesContainer">
+                <!-- Las recomendaciones se cargarán dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Línea de tiempo de actividades -->
+        <div class="card">
+            <h2>📅 Actividades recientes</h2>
+            <div id="timelineContainer">
+                <!-- La línea de tiempo se cargará dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Botón de regreso -->
+        <div class="text-center mt-5">
+            <a href="index.html" class="btn btn-regresar">🏠 Regresar a SITUTOR</a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer mt-5">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Datos de ejemplo por alumno
+        const datosAlumnos = {
+            ana: {
+                nombre: "Ana Danae Montiel Santiago",
+                puntajeTotal: 245,
+                promedioGeneral: 8.2,
+                tareasCompletadas: 12,
+                diasConsecutivos: 5,
+                insignias: [
+                    { icono: "🏅", nombre: "Esfuerzo constante", descripcion: "Has mejorado tus calificaciones" },
+                    { icono: "🤝", nombre: "Colaborador", descripcion: "Ayudaste a 3 compañeros" },
+                    { icono: "⭐", nombre: "Participación activa", descripcion: "Participaste en 5 clases seguidas" }
+                ],
+                recomendaciones: [
+                    "💪 Sigue con tu esfuerzo, has mejorado mucho en matemáticas",
+                    "📚 Te recomendamos la técnica Pomodoro para organizar tu estudio",
+                    "🎯 Participa en el taller de regulación emocional para manejar la ansiedad"
+                ],
+                actividades: [
+                    { fecha: "2026-04-05", titulo: "Completaste el formulario de autopercepción", tipo: "éxito" },
+                    { fecha: "2026-04-03", titulo: "Entregaste el proyecto de matemáticas", tipo: "éxito" },
+                    { fecha: "2026-04-01", titulo: "Asististe al taller de regulación emocional", tipo: "info" },
+                    { fecha: "2026-03-28", titulo: "Recibiste retroalimentación de tus compañeros", tipo: "info" }
+                ],
+                calificaciones: [7.5, 8.0, 8.5, 8.2],
+                animo: [3, 4, 3, 4, 4]
+            },
+            oscar: {
+                nombre: "Oscar Omar Guevara Torres",
+                puntajeTotal: 89,
+                promedioGeneral: 5.8,
+                tareasCompletadas: 4,
+                diasConsecutivos: 1,
+                insignias: [
+                    { icono: "📘", nombre: "Inicial", descripcion: "Estás comenzando tu camino" }
+                ],
+                recomendaciones: [
+                    "⚠️ Necesitas ponerte al día con tus materias arrastradas",
+                    "📅 Usa la Agenda Covey para organizar tu semana",
+                    "🤝 Busca ayuda con tus compañeros de alto rendimiento"
+                ],
+                actividades: [
+                    { fecha: "2026-04-02", titulo: "Registraste una duda en la Agenda Tutorada", tipo: "alerta" },
+                    { fecha: "2026-03-30", titulo: "Tutoría individual programada", tipo: "info" }
+                ],
+                calificaciones: [5.0, 5.5, 6.0, 5.8],
+                animo: [2, 2, 3, 2, 3]
+            },
+            azul: {
+                nombre: "Azul Valentina Ramírez Morán",
+                puntajeTotal: 178,
+                promedioGeneral: 7.5,
+                tareasCompletadas: 9,
+                diasConsecutivos: 3,
+                insignias: [
+                    { icono: "🥈", nombre: "Avanzado", descripcion: "Más de 150 puntos" },
+                    { icono: "🎯", nombre: "Esfuerzo", descripcion: "Mejora significativa" }
+                ],
+                recomendaciones: [
+                    "🧘 Practica la respiración 4-7-8 antes de los exámenes",
+                    "📖 Revisa las técnicas de estudio para mejorar tu concentración"
+                ],
+                actividades: [
+                    { fecha: "2026-04-04", titulo: "Completaste el taller de regulación emocional", tipo: "éxito" },
+                    { fecha: "2026-04-02", titulo: "Entregaste el proyecto de diseño digital", tipo: "éxito" }
+                ],
+                calificaciones: [6.8, 7.2, 7.8, 7.5],
+                animo: [3, 3, 4, 3, 4]
+            },
+            cristian: {
+                nombre: "Cristian Yamil Flores Ramírez",
+                puntajeTotal: 112,
+                promedioGeneral: 6.8,
+                tareasCompletadas: 7,
+                diasConsecutivos: 2,
+                insignias: [
+                    { icono: "🥉", nombre: "Aprendiz", descripcion: "Más de 100 puntos" }
+                ],
+                recomendaciones: [
+                    "📊 Revisa tus calificaciones con tus profesores",
+                    "⏰ Establece horarios fijos de estudio"
+                ],
+                actividades: [
+                    { fecha: "2026-04-01", titulo: "Recibiste retroalimentación de tu tutor", tipo: "info" }
+                ],
+                calificaciones: [6.5, 6.8, 7.0, 6.8],
+                animo: [3, 3, 3, 3, 3]
+            },
+            jesus: {
+                nombre: "Jesús Gael Mondragón Lemus",
+                puntajeTotal: 156,
+                promedioGeneral: 7.8,
+                tareasCompletadas: 10,
+                diasConsecutivos: 4,
+                insignias: [
+                    { icono: "🥈", nombre: "Avanzado", descripcion: "Más de 150 puntos" },
+                    { icono: "⏰", nombre: "Puntual", descripcion: "Entregas a tiempo" }
+                ],
+                recomendaciones: [
+                    "📅 Configura recordatorios para tus fechas de examen",
+                    "✅ Sigue así, vas por buen camino"
+                ],
+                actividades: [
+                    { fecha: "2026-04-05", titulo: "Recordatorio de examen programado", tipo: "alerta" },
+                    { fecha: "2026-04-03", titulo: "Entregaste todas tus tareas a tiempo", tipo: "éxito" }
+                ],
+                calificaciones: [7.2, 7.5, 8.0, 7.8],
+                animo: [4, 4, 3, 4, 4]
+            }
+        };
+
+        let calificacionesChart = null;
+        let animoChart = null;
+
+        function actualizarDatos(alumnoId) {
+            const datos = datosAlumnos[alumnoId];
+            if (!datos) return;
+
+            // Actualizar estadísticas
+            document.getElementById('puntajeTotal').innerText = datos.puntajeTotal;
+            document.getElementById('promedioGeneral').innerText = datos.promedioGeneral.toFixed(1);
+            document.getElementById('tareasCompletadas').innerText = datos.tareasCompletadas;
+            document.getElementById('diasConsecutivos').innerText = datos.diasConsecutivos;
+
+            // Actualizar insignias
+            const insigniasContainer = document.getElementById('insigniasContainer');
+            insigniasContainer.innerHTML = datos.insignias.map(i => `
+                <div class="insignia-item">
+                    <div class="insignia-icono">${i.icono}</div>
+                    <div>
+                        <div class="font-semibold text-primary">${i.nombre}</div>
+                        <div class="text-xs text-muted">${i.descripcion}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Actualizar recomendaciones
+            const recomendacionesContainer = document.getElementById('recomendacionesContainer');
+            recomendacionesContainer.innerHTML = datos.recomendaciones.map(r => `
+                <div class="recomendacion-card mb-2">
+                    <p>${r}</p>
+                </div>
+            `).join('');
+
+            // Actualizar línea de tiempo
+            const timelineContainer = document.getElementById('timelineContainer');
+            timelineContainer.innerHTML = datos.actividades.map(a => `
+                <div class="timeline-item">
+                    <div class="timeline-fecha">${a.fecha}</div>
+                    <div class="timeline-contenido">
+                        <strong>${a.titulo}</strong>
+                    </div>
+                </div>
+            `).join('');
+
+            // Actualizar gráfico de calificaciones
+            if (calificacionesChart) calificacionesChart.destroy();
+            const ctxCalif = document.getElementById('calificacionesChart').getContext('2d');
+            calificacionesChart = new Chart(ctxCalif, {
+                type: 'line',
+                data: {
+                    labels: ['Parcial 1', 'Parcial 2', 'Parcial 3', 'Promedio'],
+                    datasets: [{
+                        label: 'Calificaciones',
+                        data: datos.calificaciones,
+                        borderColor: '#1a4b6e',
+                        backgroundColor: 'rgba(26, 75, 110, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#ffb347',
+                        pointBorderColor: '#fff',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: { y: { min: 0, max: 10, title: { display: true, text: 'Calificación' } } },
+                    plugins: { legend: { position: 'top' } }
+                }
+            });
+
+            // Actualizar gráfico de estado de ánimo
+            if (animoChart) animoChart.destroy();
+            const ctxAnimo = document.getElementById('animoChart').getContext('2d');
+            const animoLabels = ['Sem -4', 'Sem -3', 'Sem -2', 'Sem -1', 'Esta semana'];
+            animoChart = new Chart(ctxAnimo, {
+                type: 'bar',
+                data: {
+                    labels: animoLabels,
+                    datasets: [{
+                        label: 'Estado de ánimo (1=Muy mal, 5=Muy bien)',
+                        data: datos.animo,
+                        backgroundColor: '#4a8c3f',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: { y: { min: 1, max: 5, title: { display: true, text: 'Nivel de ánimo' } } },
+                    plugins: { legend: { position: 'top' } }
+                }
+            });
+        }
+
+        // Evento del selector
+        document.getElementById('selectorAlumno').addEventListener('change', (e) => {
+            actualizarDatos(e.target.value);
+        });
+
+        // Cargar datos iniciales
+        actualizarDatos('ana');
+    </script>
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Análisis de Datos | Panel de Control | COBAEM</title>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <style>
+        /* Estilos específicos del panel de análisis */
+        .panel-bienvenida {
+            background: linear-gradient(135deg, #e8f0fe 0%, #d4e6f1 100%);
+            border-radius: 1rem;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #ffb347;
+        }
+        
+        .panel-bienvenida h3 {
+            color: #1a4b6e;
+            margin-bottom: 0.5rem;
+        }
+        
+        .panel-bienvenida p {
+            color: #2c3e44;
+            font-size: 0.9rem;
+        }
+        
+        /* Sección de carga de archivos */
+        .carga-section {
+            background: #fef9e8;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+            border: 1px dashed #ffb347;
+        }
+        
+        .carga-section h3 {
+            color: #b85c00;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .carga-botones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-carga {
+            background: #1c6e4a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            font-size: 0.8rem;
+        }
+        
+        .btn-carga:hover {
+            background: #0f553b;
+        }
+        
+        .file-info {
+            font-size: 0.75rem;
+            color: #4b6f7e;
+            margin-top: 0.5rem;
+        }
+        
+        /* Pestañas */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2edf2;
+            padding-bottom: 0.5rem;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 2rem;
+            transition: all 0.2s;
+            color: #4a6272;
+        }
+        
+        .tab-btn:hover {
+            background: #eef2f5;
+        }
+        
+        .tab-btn.active {
+            background: #1c6e4a;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Tablas de datos */
+        .tabla-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 1rem;
+            padding: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        
+        .data-table th,
+        .data-table td {
+            border: 1px solid #e2edf2;
+            padding: 0.6rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .data-table th {
+            background: #eef2f5;
+            font-weight: 600;
+            color: #1a4b6e;
+            position: sticky;
+            top: 0;
+        }
+        
+        .data-table tr:hover {
+            background: #f0f7f0;
+        }
+        
+        /* Tarjetas de resumen */
+        .resumen-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .resumen-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 4px solid #1c6e4a;
+        }
+        
+        .resumen-card .numero {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1c6e4a;
+        }
+        
+        .resumen-card .label {
+            font-size: 0.7rem;
+            color: #4a6272;
+        }
+        
+        .sin-datos {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        .badge-alerta {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        
+        .alerta-roja { background: #ffe8e8; color: #dc2626; }
+        .alerta-naranja { background: #fff0e0; color: #f39c12; }
+        .alerta-verde { background: #e8f4e8; color: #4a8c3f; }
+        
+        @media (max-width: 750px) {
+            .tab-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Análisis de Datos</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="index.html#seccion-recursos">📚 Recursos de apoyo</a></li>
+            <li><a href="analisis_tutoria.html">📊 Análisis de Datos</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">SITUTOR · Sistema de Comunicación Tutorial</div>
+            <h1>📊 Panel de Análisis de Datos</h1>
+            <p>Visualiza y analiza la información de los formularios 360°, calificaciones y agenda tutorada</p>
+        </div>
+
+        <!-- Panel de bienvenida -->
+        <div class="panel-bienvenida">
+            <h3>📌 ¿Cómo usar este panel?</h3>
+            <p>Exporta los datos desde Google Sheets (Archivo → Descargar → CSV) y cárgalos en las secciones correspondientes. Podrás visualizar tendencias, alertas y alumnos en seguimiento.</p>
+        </div>
+
+        <!-- Sección de carga de archivos -->
+        <div class="carga-section">
+            <h3>📂 Carga de datos desde Google Sheets</h3>
+            <p style="font-size:0.8rem; margin-bottom:0.5rem;">Exporta tus hojas de cálculo como CSV y súbelas aquí:</p>
+            <div class="carga-botones">
+                <label class="btn-carga">
+                    📋 Formularios 360° <input type="file" id="fileFormularios" accept=".csv" style="display:none;">
+                </label>
+                <label class="btn-carga">
+                    📊 Calificaciones <input type="file" id="fileCalificaciones" accept=".csv" style="display:none;">
+                </label>
+                <label class="btn-carga">
+                    📝 Agenda Tutorada <input type="file" id="fileAgenda" accept=".csv" style="display:none;">
+                </label>
+            </div>
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+
+        <!-- Pestañas de visualización -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tab-alertas">⚠️ Alertas 360°</button>
+            <button class="tab-btn" data-tab="tab-calificaciones">📈 Calificaciones</button>
+            <button class="tab-btn" data-tab="tab-agenda">📝 Agenda Tutorada</button>
+            <button class="tab-btn" data-tab="tab-resumen">📊 Resumen General</button>
+        </div>
+
+        <!-- Tab: Alertas 360° -->
+        <div id="tab-alertas" class="tab-content active">
+            <div class="resumen-cards">
+                <div class="resumen-card">
+                    <div class="numero" id="totalAlertas">0</div>
+                    <div class="label">Total de alertas</div>
+                </div>
+                <div class="resumen-card">
+                    <div class="numero" id="alertasUrgentes">0</div>
+                    <div class="label">Alertas urgentes</div>
+                </div>
+                <div class="resumen-card">
+                    <div class="numero" id="alertasAtendidas">0</div>
+                    <div class="label">Alertas atendidas</div>
+                </div>
+            </div>
+            <div class="tabla-container">
+                <div id="alertasTabla" class="sin-datos">📂 Carga un archivo CSV de formularios 360° para ver las alertas</div>
+            </div>
+        </div>
+
+        <!-- Tab: Calificaciones -->
+        <div id="tab-calificaciones" class="tab-content">
+            <div class="resumen-cards">
+                <div class="resumen-card">
+                    <div class="numero" id="promedioGrupo">-</div>
+                    <div class="label">Promedio del grupo</div>
+                </div>
+                <div class="resumen-card">
+                    <div class="numero" id="aprobados">-</div>
+                    <div class="label">Alumnos aprobados</div>
+                </div>
+                <div class="resumen-card">
+                    <div class="numero" id="riesgo">-</div>
+                    <div class="label">En riesgo (&lt;6.0)</div>
+                </div>
+            </div>
+            <div class="tabla-container">
+                <div id="calificacionesTabla" class="sin-datos">📂 Carga un archivo CSV de calificaciones para ver el análisis</div>
+            </div>
+        </div>
+
+        <!-- Tab: Agenda Tutorada -->
+        <div id="tab-agenda" class="tab-content">
+            <div class="resumen-cards">
+                <div class="resumen-card">
+                    <div class="numero" id="totalActividades">0</div>
+                    <div class="label">Actividades registradas</div>
+                </div>
+                <div class="resumen-card">
+                    <div class="numero" id="actividadesConfusion">0</div>
+                    <div class="label">Con confusión reportada</div>
+                </div>
+                <div class="resumen-card">
+                    <div class="numero" id="actividadesCompletadas">0</div>
+                    <div class="label">Completadas</div>
+                </div>
+            </div>
+            <div class="tabla-container">
+                <div id="agendaTabla" class="sin-datos">📂 Carga un archivo CSV de la agenda tutorada para ver las actividades</div>
+            </div>
+        </div>
+
+        <!-- Tab: Resumen General -->
+        <div id="tab-resumen" class="tab-content">
+            <div class="tabla-container">
+                <div id="resumenGeneral" class="sin-datos">📂 Carga los archivos CSV para generar un resumen integrado</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Pestañas
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Almacenamiento de datos
+        let datosFormularios = [];
+        let datosCalificaciones = [];
+        let datosAgenda = [];
+
+        // Función para actualizar la vista
+        function actualizarVistas() {
+            actualizarAlertas();
+            actualizarCalificaciones();
+            actualizarAgenda();
+            actualizarResumenGeneral();
+            actualizarInfoArchivos();
+        }
+
+        function actualizarInfoArchivos() {
+            const info = [];
+            if (datosFormularios.length) info.push(`✅ Formularios 360°: ${datosFormularios.length} registros`);
+            if (datosCalificaciones.length) info.push(`✅ Calificaciones: ${datosCalificaciones.length} registros`);
+            if (datosAgenda.length) info.push(`✅ Agenda Tutorada: ${datosAgenda.length} registros`);
+            document.getElementById('fileInfo').innerHTML = info.join(' · ') || '📂 No hay archivos cargados';
+        }
+
+        function actualizarAlertas() {
+            const container = document.getElementById('alertasTabla');
+            if (!datosFormularios.length) {
+                container.innerHTML = '<div class="sin-datos">📂 Carga un archivo CSV de formularios 360° para ver las alertas</div>';
+                document.getElementById('totalAlertas').innerText = '0';
+                document.getElementById('alertasUrgentes').innerText = '0';
+                document.getElementById('alertasAtendidas').innerText = '0';
+                return;
+            }
+
+            // Detectar columnas de alertas
+            const muestra = datosFormularios[0];
+            const tieneEstado = Object.keys(muestra).some(k => k.toLowerCase().includes('estado'));
+            const tieneAlerta = Object.keys(muestra).some(k => k.toLowerCase().includes('alerta') || k.toLowerCase().includes('observacion'));
+            
+            let urgentes = 0;
+            let atendidas = 0;
+            
+            const html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Alumno</th>
+                            <th>Fuente</th>
+                            <th>Alerta / Observación</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${datosFormularios.slice(0, 100).map(row => {
+                            let fecha = row.fecha || row.FECHA || row.Fecha || row['Marca temporal'] || '';
+                            let alumno = row.alumno || row.Alumno || row.NOMBRE || row.nombre || '';
+                            let fuente = row.fuente || row.Fuente || row['rol'] || row.Rol || '';
+                            let alerta = row.alerta || row.Alerta || row.observacion || row.Observacion || row['¿Qué ocurre?'] || '';
+                            let estado = row.estado || row.Estado || '';
+                            
+                            if (alerta && alerta.toLowerCase().includes('urgente')) urgentes++;
+                            if (estado && estado.toLowerCase().includes('atendido')) atendidas++;
+                            
+                            const estadoClass = estado === 'Atendido' ? 'alerta-verde' : (estado === 'Pendiente' ? 'alerta-roja' : 'alerta-naranja');
+                            
+                            return `<tr>
+                                <td>${fecha.substring(0, 10) || '-'}</td>
+                                <td>${alumno}</td>
+                                <td>${fuente}</td>
+                                <td>${alerta}</td>
+                                <td><span class="badge-alerta ${estadoClass}">${estado || 'Pendiente'}</span></td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+                ${datosFormularios.length > 100 ? '<p style="font-size:0.7rem; margin-top:0.5rem;">📌 Mostrando los primeros 100 registros</p>' : ''}
+            `;
+            container.innerHTML = html;
+            document.getElementById('totalAlertas').innerText = datosFormularios.length;
+            document.getElementById('alertasUrgentes').innerText = urgentes;
+            document.getElementById('alertasAtendidas').innerText = atendidas;
+        }
+
+        function actualizarCalificaciones() {
+            const container = document.getElementById('calificacionesTabla');
+            if (!datosCalificaciones.length) {
+                container.innerHTML = '<div class="sin-datos">📂 Carga un archivo CSV de calificaciones para ver el análisis</div>';
+                document.getElementById('promedioGrupo').innerText = '-';
+                document.getElementById('aprobados').innerText = '-';
+                document.getElementById('riesgo').innerText = '-';
+                return;
+            }
+
+            // Intentar detectar columnas de calificaciones
+            let promedios = [];
+            let aprobados = 0;
+            let enRiesgo = 0;
+            
+            datosCalificaciones.forEach(row => {
+                let promedio = null;
+                for (let key in row) {
+                    if (key.toLowerCase().includes('promedio') || key.toLowerCase().includes('calif')) {
+                        promedio = parseFloat(row[key]);
+                        break;
+                    }
+                }
+                if (promedio && !isNaN(promedio)) {
+                    promedios.push(promedio);
+                    if (promedio >= 6) aprobados++;
+                    if (promedio < 6) enRiesgo++;
+                }
+            });
+            
+            const promedioGrupo = promedios.length ? (promedios.reduce((a,b) => a+b,0) / promedios.length).toFixed(1) : '-';
+            
+            document.getElementById('promedioGrupo').innerText = promedioGrupo;
+            document.getElementById('aprobados').innerText = aprobados;
+            document.getElementById('riesgo').innerText = enRiesgo;
+            
+            // Mostrar tabla de calificaciones
+            const headers = Object.keys(datosCalificaciones[0]);
+            const html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                    </thead>
+                    <tbody>
+                        ${datosCalificaciones.slice(0, 50).map(row => `
+                            <tr>${headers.map(h => `<td>${row[h] || '-'}</td>`).join('')}</tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ${datosCalificaciones.length > 50 ? '<p style="font-size:0.7rem; margin-top:0.5rem;">📌 Mostrando los primeros 50 registros</p>' : ''}
+            `;
+            container.innerHTML = html;
+        }
+
+        function actualizarAgenda() {
+            const container = document.getElementById('agendaTabla');
+            if (!datosAgenda.length) {
+                container.innerHTML = '<div class="sin-datos">📂 Carga un archivo CSV de la agenda tutorada para ver las actividades</div>';
+                document.getElementById('totalActividades').innerText = '0';
+                document.getElementById('actividadesConfusion').innerText = '0';
+                document.getElementById('actividadesCompletadas').innerText = '0';
+                return;
+            }
+
+            let conConfusion = 0;
+            let completadas = 0;
+            
+            datosAgenda.forEach(row => {
+                let confusion = '';
+                let estado = '';
+                for (let key in row) {
+                    if (key.toLowerCase().includes('confusion') || key.toLowerCase().includes('duda')) confusion = row[key];
+                    if (key.toLowerCase().includes('estado')) estado = row[key];
+                }
+                if (confusion && confusion.trim()) conConfusion++;
+                if (estado && estado.toLowerCase().includes('complet')) completadas++;
+            });
+            
+            document.getElementById('totalActividades').innerText = datosAgenda.length;
+            document.getElementById('actividadesConfusion').innerText = conConfusion;
+            document.getElementById('actividadesCompletadas').innerText = completadas;
+            
+            const headers = Object.keys(datosAgenda[0]);
+            const html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                    </thead>
+                    <tbody>
+                        ${datosAgenda.slice(0, 50).map(row => `
+                            <tr>${headers.map(h => `<td>${row[h] || '-'}</td>`).join('')}</tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ${datosAgenda.length > 50 ? '<p style="font-size:0.7rem; margin-top:0.5rem;">📌 Mostrando los primeros 50 registros</p>' : ''}
+            `;
+            container.innerHTML = html;
+        }
+
+        function actualizarResumenGeneral() {
+            const container = document.getElementById('resumenGeneral');
+            const resumen = [];
+            
+            if (datosFormularios.length) {
+                resumen.push(`<h3 style="color:#1a4b6e;">📋 Formularios 360°</h3>`);
+                resumen.push(`<p>Total de registros: <strong>${datosFormularios.length}</strong></p>`);
+                const fechas = datosFormularios.map(r => r.fecha || r.FECHA || r.Fecha || '').filter(f => f);
+                if (fechas.length) {
+                    resumen.push(`<p>Rango de fechas: ${fechas.sort()[0]} a ${fechas.sort()[fechas.length-1]}</p>`);
+                }
+            }
+            
+            if (datosCalificaciones.length) {
+                resumen.push(`<h3 style="color:#1a4b6e; margin-top:1rem;">📈 Calificaciones</h3>`);
+                resumen.push(`<p>Total de registros: <strong>${datosCalificaciones.length}</strong></p>`);
+            }
+            
+            if (datosAgenda.length) {
+                resumen.push(`<h3 style="color:#1a4b6e; margin-top:1rem;">📝 Agenda Tutorada</h3>`);
+                resumen.push(`<p>Total de actividades: <strong>${datosAgenda.length}</strong></p>`);
+            }
+            
+            if (!datosFormularios.length && !datosCalificaciones.length && !datosAgenda.length) {
+                container.innerHTML = '<div class="sin-datos">📂 Carga los archivos CSV para generar un resumen integrado</div>';
+                return;
+            }
+            
+            container.innerHTML = `<div style="padding:0.5rem;">${resumen.join('')}<p style="margin-top:1rem;">💡 Para un análisis más detallado, explora las pestañas individuales.</p></div>`;
+        }
+
+        // Procesar archivo CSV
+        function procesarCSV(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                const headers = lines[0].split(',').map(h => h.replace(/["']/g, '').trim());
+                const data = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const values = lines[i].split(',').map(v => v.replace(/["']/g, '').trim());
+                    const row = {};
+                    headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+                    data.push(row);
+                }
+                callback(data);
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // Eventos de carga de archivos
+        document.getElementById('fileFormularios').addEventListener('change', (e) => {
+            if (e.target.files[0]) procesarCSV(e.target.files[0], (data) => {
+                datosFormularios = data;
+                actualizarVistas();
+            });
+        });
+        
+        document.getElementById('fileCalificaciones').addEventListener('change', (e) => {
+            if (e.target.files[0]) procesarCSV(e.target.files[0], (data) => {
+                datosCalificaciones = data;
+                actualizarVistas();
+            });
+        });
+        
+        document.getElementById('fileAgenda').addEventListener('change', (e) => {
+            if (e.target.files[0]) procesarCSV(e.target.files[0], (data) => {
+                datosAgenda = data;
+                actualizarVistas();
+            });
+        });
+        
+        // Inicializar
+        actualizarVistas();
+    </script>
+</body>
+</html>
