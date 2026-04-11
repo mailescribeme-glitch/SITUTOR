@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Recursos de apoyo</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1RSFG49EQK"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-1RSFG49EQK');
+    </script>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <style>
+        /* Estilos específicos para la página de recursos */
+        .recursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+        .recurso-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid #e2edf2;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .recurso-card:hover { transform: translateY(-5px); }
+        .recurso-card h3 { font-size: 1.2rem; margin: 0.5rem 0; color: #1a4b6e; }
+        .recurso-card p { font-size: 0.85rem; margin: 0.5rem 0; flex-grow: 1; }
+        .badge {
+            background: #e9ecef;
+            border-radius: 100px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: #1c6e4a;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        .btn-taller { background: #2c7da0; }
+        .btn-recurso { background: #b85c00; }
+        .btn-taller:hover, .btn-recurso:hover { transform: scale(1.02); }
+        .btn-taller:hover { background: #1a4b6e; }
+        .btn-recurso:hover { background: #8c4500; }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Recursos de apoyo</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="recursos_apoyo.html">📚 Recursos de apoyo</a></li>
+            <li><a href="analisis_tutoria.html">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="school-badge">SITUTOR · Herramientas para tu desarrollo</div>
+            <h1>📚 Recursos de apoyo</h1>
+            <p>Explora todas las herramientas diseñadas para fortalecer tu bienestar, organización y aprendizaje</p>
+        </div>
+
+        <div class="recursos-grid">
+            <!-- 1. Taller de Regulación Emocional -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#e0f0f5;">🧠 TALLER AUTÓNOMO</span>
+                <h3>🧘 Domino mi estrés, transformo mi desempeño</h3>
+                <p>3 técnicas prácticas · 30 minutos · A tu ritmo</p>
+                <a href="taller_regulacion_emocional.html" class="btn btn-taller">🧘 ACCEDER AL TALLER →</a>
+            </div>
+
+            <!-- 2. Agenda Covey Interactiva -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#fef0e0;">📋 PLANIFICACIÓN</span>
+                <h3>📋 Agenda Covey Interactiva</h3>
+                <p>Los 7 Hábitos de los Adolescentes Altamente Efectivos</p>
+                <a href="agenda_covey.html" class="btn btn-recurso">📋 ACCEDER A LA AGENDA →</a>
+            </div>
+
+            <!-- 3. Agenda Tutorada Semanal -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#ffe8e8;">📝 ACLARA TUS DUDAS</span>
+                <h3>📝 Agenda Tutorada Semanal</h3>
+                <p>¿No entiendes una actividad? Regístrala aquí y construyamos juntos la solución.</p>
+                <a href="https://forms.gle/boA7Xb9pbEuCxY94A" class="btn btn-recurso" target="_blank">📝 AGENDAR ACTIVIDAD →</a>
+            </div>
+
+            <!-- 4. Técnicas de Estudio -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#e8e8f0;">📚 TÉCNICAS DE ESTUDIO</span>
+                <h3>📖 Infografía interactiva</h3>
+                <p>6 técnicas comprobadas para estudiar mejor</p>
+                <a href="tecnicas_estudio.html" class="btn btn-recurso">📖 VER TÉCNICAS →</a>
+            </div>
+
+            <!-- 5. Banco de Rúbricas -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#e0f0f5;">📋 EVALUACIÓN</span>
+                <h3>📋 Banco de Rúbricas</h3>
+                <p>Consulta los criterios de evaluación antes de entregar tus actividades.</p>
+                <a href="banco_rubricas.html" class="btn btn-recurso">📋 VER RÚBRICAS →</a>
+            </div>
+
+            <!-- 6. Mi Progreso -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#d4e6f1;">📈 PROGRESO PERSONAL</span>
+                <h3>📈 Mi Progreso</h3>
+                <p>Visualiza tu evolución académica, tus logros y recomendaciones personalizadas.</p>
+                <a href="mi_progreso.html" class="btn btn-taller">📈 VER MI PROGRESO →</a>
+            </div>
+
+            <!-- 7. Test Vocacional -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#d4e6f1;">🎓 ORIENTACIÓN VOCACIONAL</span>
+                <h3>🎓 Test Vocacional</h3>
+                <p>100 preguntas · Descubre tu área de afinidad · Basado en parámetros UNAM</p>
+                <a href="test_vocacional.html" class="btn btn-taller">🎓 REALIZAR TEST →</a>
+            </div>
+
+            <!-- 8. Test Estilos de Aprendizaje VARK -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#d4e6f1;">📘 ESTILOS DE APRENDIZAJE</span>
+                <h3>🎨 Test VARK</h3>
+                <p>20 preguntas · Descubre si aprendes mejor de forma visual, auditiva, leyendo o con práctica.</p>
+                <a href="estilos_aprendizaje.html" class="btn btn-taller">📘 REALIZAR TEST →</a>
+            </div>
+
+            <!-- 9. Test de Personalidad / Perfiles de Comunicación -->
+            <div class="recurso-card">
+                <span class="badge" style="background:#d4e6f1;">🐾 TEST DE PERSONALIDAD</span>
+                <h3>🎭 Dinámica de Perfiles</h3>
+                <p>14 preguntas · Descubre tu estilo de comunicación y trabajo (Pantera, Pavo Real, Delfín, Búho).</p>
+                <a href="test_personalidad.html" class="btn btn-taller">🐾 REALIZAR TEST →</a>
+            </div>
+        </div>
+
+        <div class="botonera" style="margin-top: 1rem;">
+            <a href="index.html" class="btn btn-regresar">🏠 Regresar a SITUTOR</a>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+    </script>
+</body>
+</html>
