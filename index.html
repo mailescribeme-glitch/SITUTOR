@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SITUTOR | Sistema de Comunicación Tutorial | COBAEM</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1RSFG49EQK"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-1RSFG49EQK');
+    </script>
+    
+    <!-- CSS externo común -->
+    <link rel="stylesheet" href="situtor.css">
+    
+    <style>
+        /* Colores de sección */
+        .seccion-que-es { background: white; border-top: 5px solid #1a4b6e; }
+        .seccion-360 { background: #f0f7f0; border-top: 5px solid #4a8c3f; }
+        .seccion-recursos { background: #fef9e8; border-top: 5px solid #ffb347; }
+        .seccion-analisis { background: #e8f0fe; border-top: 5px solid #2c7da0; }
+        
+        /* Contenedor de iconos de retroalimentación */
+        .iconos-360 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .icono-item {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .icono-item .emoji { font-size: 2rem; }
+        
+        /* Botón de acceso a recursos */
+        .btn-acceso {
+            background: #b85c00;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- MENÚ FIJO DE HAMBURGUESA -->
+    <div class="menu-fijo">
+        <div class="logo-menu">
+            <img src="logo_tutor.png" alt="Logo" class="logo-menu-img" onerror="this.style.display='none'">
+            <div class="logo-menu-text">SITUTOR<br><small>Sistema de Comunicación Tutorial</small></div>
+        </div>
+        <button class="hamburguesa" id="menuToggle"><span></span><span></span><span></span></button>
+    </div>
+
+    <div class="menu-panel" id="menuPanel">
+        <ul>
+            <li><a href="index.html">🏠 Inicio</a></li>
+            <li><a href="retroalimentacion_360.html">🔄 Retroalimentación 360°</a></li>
+            <li><a href="recursos_apoyo.html">📚 Recursos de apoyo</a></li>
+            <li><a href="analisis_tutoria.html">📊 Análisis de Tutoría</a></li>
+        </ul>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- HEADER PRINCIPAL -->
+        <div class="header">
+            <div class="school-badge">COLEGIO DE BACHILLERES DEL ESTADO DE MÉXICO · PLANTEL 03 CHIMALHUACÁN</div>
+            <h1>SITUTOR</h1>
+            <p>Sistema de Comunicación Tutorial · Información oportuna para la prevención y el éxito académico</p>
+        </div>
+
+        <!-- SECCIÓN 1: ¿QUÉ ES SITUTOR? + ACCIONES DE MEDIACIÓN -->
+        <div id="seccion-que-es" class="seccion seccion-que-es">
+            <h2>📖 ¿Qué es SITUTOR?</h2>
+            <p style="margin-bottom: 1rem;">SITUTOR es el <strong>Sistema de Comunicación Tutorial</strong> del COBAEM Plantel 03 Chimalhuacán. Su objetivo es fortalecer el acompañamiento académico y emocional de los estudiantes a través de herramientas digitales, formularios de retroalimentación y recursos de autoayuda.</p>
+            <h3 style="color: #1a4b6e; margin: 1rem 0 0.5rem;">🤝 Acciones de mediación y prevención</h3>
+            <div class="grid-acciones">
+                <div class="accion-item"><div class="icono">📞</div><strong>Diálogo con docentes</strong><p style="font-size: 0.75rem;">Coordinación para ajustar estrategias de apoyo.</p></div>
+                <div class="accion-item"><div class="icono">🧠</div><strong>Canalización a Orientación</strong><p style="font-size: 0.75rem;">Derivación a Construye T para apoyo psicosocial.</p></div>
+                <div class="accion-item"><div class="icono">👥</div><strong>Tutorías grupales</strong><p style="font-size: 0.75rem;">Sesiones para abordar problemáticas comunes.</p></div>
+                <div class="accion-item"><div class="icono">🏠</div><strong>Contacto con familias</strong><p style="font-size: 0.75rem;">Comunicación oportuna con padres de familia.</p></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: RETROALIMENTACIÓN 360° -->
+        <div id="seccion-360" class="seccion seccion-360">
+            <h2>🔄 Retroalimentación 360°</h2>
+            <p>Una visión completa de tu desempeño. Integramos la perspectiva de <strong>docentes, el propio alumno, sus compañeros y su familia</strong> para obtener una visión integral de fortalezas y áreas de oportunidad.</p>
+            <div class="iconos-360">
+                <div class="icono-item"><div class="emoji">👩‍🏫</div><strong>Docentes</strong><p style="font-size: 0.7rem;">Desempeño académico</p></div>
+                <div class="icono-item"><div class="emoji">🧑‍🎓</div><strong>Autopercepción</strong><p style="font-size: 0.7rem;">Estado de ánimo y bienestar</p></div>
+                <div class="icono-item"><div class="emoji">🤝</div><strong>Compañeros</strong><p style="font-size: 0.7rem;">Trabajo en equipo</p></div>
+                <div class="icono-item"><div class="emoji">👪</div><strong>Familia</strong><p style="font-size: 0.7rem;">Hábitos en casa</p></div>
+            </div>
+            <div style="text-align: center;"><a href="retroalimentacion_360.html" class="btn btn-360">🔄 ACCEDER A FORMULARIOS 360° →</a></div>
+        </div>
+
+        <!-- SECCIÓN 3: RECURSOS DE APOYO -->
+        <div id="seccion-recursos" class="seccion seccion-recursos">
+            <h2>📚 Recursos de apoyo para tu desarrollo</h2>
+            <p>Herramientas diseñadas para fortalecer tu bienestar emocional, organización, estudio y motivación.</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <a href="recursos_apoyo.html" class="btn btn-acceso">📚 VER TODOS LOS RECURSOS →</a>
+            </div>
+            <div class="warning-note" style="margin-top: 1rem;">
+                <strong>📌 ¿Qué encontrarás?</strong> Taller de regulación emocional, Agenda Covey, Agenda Tutorada, Técnicas de estudio, Banco de rúbricas, Mi progreso, Test vocacional, Test de estilos de aprendizaje y Perfiles de comunicación.
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: ANÁLISIS DE TUTORÍA -->
+        <div id="seccion-analisis" class="seccion seccion-analisis">
+            <h2>📊 Análisis de Tutoría</h2>
+            <p>Herramientas profesionales para el seguimiento, evaluación y mejora de la acción tutorial. Accede a los paneles de control y reportes generados por SITUTOR.</p>
+            <div class="analisis-grid">
+                <div class="analisis-card protected" data-url="analisis_tutoria.html">
+                    <div class="icono-analisis">📈</div>
+                    <h3>Análisis de Tutoría</h3>
+                    <p>Visualiza calificaciones, alertas de formularios 360° y alumnos en seguimiento. El centro neurálgico del análisis tutorial.</p>
+                    <div class="btn" style="background: #2c7da0;">📊 ACCEDER →</div>
+                </div>
+                <div class="analisis-card protected" data-url="tablero_logros.html">
+                    <div class="icono-analisis">🏆</div>
+                    <h3>Tablero de Logros</h3>
+                    <p>Sistema de gamificación con puntajes, rangos (Líder, Avanzado, Aprendiz, Inicial) e insignias por esfuerzo y colaboración.</p>
+                    <div class="btn" style="background: #2c7da0;">🏆 VER TABLERO →</div>
+                </div>
+                <div class="analisis-card protected" data-url="reporte_funcionalidad_situtor.html">
+                    <div class="icono-analisis">📋</div>
+                    <h3>Reporte de Funcionalidad</h3>
+                    <p>Evalúa el rendimiento de SITUTOR, su usabilidad, impacto y genera reportes para la mejora continua del sistema.</p>
+                    <div class="btn" style="background: #2c7da0;">📋 GENERAR REPORTE →</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-contenido">
+                <p>© 2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>Material de autoría del Tutor Grupal · Basado en el SiNaTA</p>
+                <p>COBAEM Plantel 03 Chimalhuacán · Tutoría Grupal</p>
+                <p>🔐 © 2024-2026 José Huidobro Espejel. Todos los derechos reservados.</p>
+                <p>📧 Contacto: <a href="mailto:josehuidobro03@my.cobaemex.edu.mx">josehuidobro03@my.cobaemex.edu.mx</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Menú de hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        function closeMenu() { menuPanel.classList.remove('open'); menuOverlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+        function openMenu() { menuPanel.classList.add('open'); menuOverlay.classList.add('active'); menuToggle.classList.add('active'); }
+        menuToggle.addEventListener('click', () => { menuPanel.classList.contains('open') ? closeMenu() : openMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Navegación suave desde el menú
+        document.querySelectorAll('.menu-panel a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                closeMenu();
+            });
+        });
+
+        // Protección por contraseña para análisis
+        const CONTRASENA = "qwepoi";
+        function verificarContrasena(url) {
+            const overlay = document.createElement('div');
+            overlay.className = 'password-overlay';
+            overlay.innerHTML = `
+                <div class="password-modal">
+                    <h3>🔐 Acceso restringido</h3>
+                    <p>Esta sección es exclusiva para el Tutor Grupal.</p>
+                    <input type="password" id="claveAcceso" placeholder="Contraseña" autofocus>
+                    <button id="btnVerificarClave">Ingresar</button>
+                    <div id="errorClave" class="error-msg"></div>
+                    <hr style="margin: 1rem 0;">
+                    <button id="btnCancelar" style="background:#94a3b8;">Cancelar</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            const input = document.getElementById('claveAcceso');
+            const btnVerificar = document.getElementById('btnVerificarClave');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const errorDiv = document.getElementById('errorClave');
+            function verificar() {
+                if (input.value === CONTRASENA) { overlay.remove(); window.location.href = url; }
+                else { errorDiv.textContent = '❌ Contraseña incorrecta. Acceso denegado.'; input.value = ''; input.focus(); }
+            }
+            btnVerificar.addEventListener('click', verificar);
+            btnCancelar.addEventListener('click', () => overlay.remove());
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') verificar(); });
+            input.focus();
+        }
+        document.querySelectorAll('.analisis-card.protected').forEach(card => {
+            const url = card.getAttribute('data-url');
+            if (url) card.addEventListener('click', (e) => { if (e.target.classList.contains('btn')) e.stopPropagation(); verificarContrasena(url); });
+        });
+    </script>
+</body>
+</html>
